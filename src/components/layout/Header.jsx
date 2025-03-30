@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Navbar, Container } from 'react-bootstrap';
-import { BsSearch, BsCart3, BsPerson } from 'react-icons/bs';
+import { Navbar, Container, Dropdown } from 'react-bootstrap';
+import { BsSearch, BsCart3, BsPerson, BsBoxArrowRight, BsPersonCircle, BsClipboardCheck } from 'react-icons/bs';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../hooks/useAuth';
 import LoginModal from '../auth/LoginModal';
@@ -14,12 +14,21 @@ const Header = () => {
   
 
   const handleAuthClick = () => {
-    if (isAuthenticated) {
-      logout();
-    } else {
+    if (!isAuthenticated) {
       setShowLoginModal(true);
     }
   };
+
+  const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <button
+      ref={ref}
+      className="btn text-dark p-0 d-flex align-items-center"
+      style={{ fontSize: '15px' }}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  ));
 
   return (
     <>
@@ -64,18 +73,68 @@ const Header = () => {
                 VI
               </button>
 
-              <button 
-                className="btn text-dark p-0 d-flex align-items-center" 
-                style={{ fontSize: '15px' }}
-                onClick={handleAuthClick}
-              >
-                <BsPerson className="me-2" style={{ fontSize: '20px' }} />
-                {isAuthenticated ? (
-                  <span>{user?.email || 'Tài khoản'}</span>
-                ) : (
-                  'Đăng nhập'
-                )}
-              </button>
+              {isAuthenticated ? (
+                <Dropdown align="end">
+                  <Dropdown.Toggle as={CustomToggle}>
+                    <BsPerson className="me-2" style={{ fontSize: '20px' }} />
+                    <span>{user?.email || 'Tài khoản'}</span>
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu style={{
+                    marginTop: '15px',
+                    padding: '0.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                    minWidth: '220px'
+                  }}>
+                    <div className="px-3 py-2 mb-2">
+                      <div className="text-muted" style={{ fontSize: '13px' }}>Xin chào!</div>
+                      <div className="fw-medium text-truncate" style={{ fontSize: '15px' }}>{user?.email}</div>
+                    </div>
+                    
+                    <Dropdown.Item 
+                      as={Link} 
+                      to="/profile"
+                      className="d-flex align-items-center rounded-3 mb-1 py-2"
+                      style={{ fontSize: '14px' }}
+                    >
+                      <BsPersonCircle className="me-2" style={{ fontSize: '16px' }} />
+                      Thông tin tài khoản
+                    </Dropdown.Item>
+                    
+                    <Dropdown.Item 
+                      as={Link} 
+                      to="/orders"
+                      className="d-flex align-items-center rounded-3 mb-1 py-2"
+                      style={{ fontSize: '14px' }}
+                    >
+                      <BsClipboardCheck className="me-2" style={{ fontSize: '16px' }} />
+                      Đơn hàng của tôi
+                    </Dropdown.Item>
+                    
+                    <Dropdown.Divider className="my-2" style={{ opacity: 0.08 }} />
+                    
+                    <Dropdown.Item 
+                      onClick={logout}
+                      className="d-flex align-items-center rounded-3 text-danger py-2"
+                      style={{ fontSize: '14px' }}
+                    >
+                      <BsBoxArrowRight className="me-2" style={{ fontSize: '16px' }} />
+                      Đăng xuất
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              ) : (
+                <button 
+                  className="btn text-dark p-0 d-flex align-items-center" 
+                  style={{ fontSize: '15px' }}
+                  onClick={handleAuthClick}
+                >
+                  <BsPerson className="me-2" style={{ fontSize: '20px' }} />
+                  Đăng nhập
+                </button>
+              )}
             </div>
           </div>
         </Container>

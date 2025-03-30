@@ -1,11 +1,11 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { AUTH_TOKEN_NAME } from '../config';
 
-const COOKIE_NAME = 'authToken';
 
 export const setAuthToken = (token) => {
-  Cookies.set(COOKIE_NAME, token, {
-    expires: 7,
+  Cookies.set(AUTH_TOKEN_NAME, token, {
+    expires: 1, // 1 ngày
     secure: true,
     sameSite: 'Strict',
     path: '/',
@@ -15,10 +15,10 @@ export const setAuthToken = (token) => {
 };
 
 export const removeAuthToken = () => {
-  Cookies.remove(COOKIE_NAME);
+  Cookies.remove(AUTH_TOKEN_NAME);
   delete axios.defaults.headers.common['Authorization'];
 };
 
 export const getAuthToken = () => {
-  return Cookies.get(COOKIE_NAME);
+  return Cookies.get(AUTH_TOKEN_NAME);
 };

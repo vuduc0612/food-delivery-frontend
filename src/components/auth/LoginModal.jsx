@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../../hooks/useAuth'; 
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
@@ -11,6 +11,16 @@ const LoginModal = ({ show, onHide }) => {
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
 
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!show) {
+      setIsLogin(true);
+      setEmail('');
+      setPassword('');
+      setError(null);
+    }
+  }, [show, setError]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = isLogin 
@@ -19,8 +29,6 @@ const LoginModal = ({ show, onHide }) => {
       
     if (success) {
       onHide();
-      setEmail('');
-      setPassword('');
     }
   };
 
