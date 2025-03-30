@@ -22,11 +22,11 @@ const RestaurantCard = ({ restaurant }) => {
       <Card.Body>
         <Card.Title className="text-dark mb-2">{restaurant.name}</Card.Title>
         <div className="mb-2">
-          <span className="badge bg-success me-2">
-            <i className="bi bi-star-fill me-1"></i>
-            4.5
-          </span>
-          <small className="text-muted">(999+)</small>
+          <div className="d-flex align-items-center">
+            <i className="bi bi-star-fill me-1 rating-star"></i>
+            <span className="rating-text me-1">4.5</span>
+            <small className="rating-text">(999+)</small>
+          </div>
         </div>
         <Card.Text className="text-muted small mb-1">
           <i className="bi bi-geo-alt me-1"></i>

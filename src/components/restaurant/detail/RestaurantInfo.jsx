@@ -19,11 +19,11 @@ const RestaurantInfo = ({ restaurant }) => {
           <Col md={9}>
             <h1 className="mb-2">{restaurant.name}</h1>
             <div className="d-flex align-items-center mb-2">
-              <Badge bg="success" className="me-2">
-                <i className="bi bi-star-fill me-1"></i>
-                4.5
-              </Badge>
-              <span className="text-muted">(999+ đánh giá)</span>
+              <div className="me-2 d-flex align-items-center">
+                <i className="bi bi-star-fill me-1 rating-star"></i>
+                <span className="rating-text">4.5</span>
+              </div>
+              <span className="rating-text">(999+ đánh giá)</span>
             </div>
             <p className="mb-2">
               <i className="bi bi-geo-alt me-2"></i>

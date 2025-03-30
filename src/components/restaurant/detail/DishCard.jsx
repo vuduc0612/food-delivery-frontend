@@ -1,7 +1,15 @@
 import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
+import { useCart } from '../../../contexts/CartContext';
 
 const DishCard = ({ dish }) => {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart(dish);
+    // Có thể thêm thông báo thành công ở đây
+  };
+
   return (
     <Card className="h-100 hover-card">
       <Row className="g-0 h-100">
@@ -20,8 +28,13 @@ const DishCard = ({ dish }) => {
               <Card.Text className="text-muted mb-2">{dish.description}</Card.Text>
             </div>
             <div className="d-flex justify-content-between align-items-center mt-auto pt-3">
-              <span className="text-black fw-bold">{(dish.price*1000).toLocaleString()}đ</span>
-              <button className="btn btn-outline-success btn-sm">
+              <span className="fw-bold">
+                {(dish.price*1000).toLocaleString()}đ
+              </span>
+              <button 
+                className="btn custom-btn-add"
+                onClick={handleAddToCart}
+              >
                 <i className="bi bi-plus-lg"></i>
               </button>
             </div>
