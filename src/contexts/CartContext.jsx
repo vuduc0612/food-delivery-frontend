@@ -7,6 +7,7 @@ import {
 } from '../services/cartService';
 import { useAuth } from '../hooks/useAuth';
 import { getAuthToken } from '../utils/authToken';
+import { Modal } from 'react-bootstrap';
 
 const CartContext = createContext();
 
@@ -24,6 +25,13 @@ export const CartProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
 
+  // Modal xác nhận thêm món từ nhà hàng khác
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    dish: null,
+  });
+
+  // Lấy giỏ hàng từ backend
   const fetchCart = async () => {
     if (!isAuthenticated) {
       setItems([]);
@@ -36,7 +44,6 @@ export const CartProvider = ({ children }) => {
       setError(null);
       const token = getAuthToken();
       const cartData = await getCart1(token);
-      //console.log("Cart Data from API:", cartData);
 
       if (cartData && Array.isArray(cartData.items)) {
         setItems(cartData.items);
@@ -56,6 +63,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Thêm món vào giỏ, kiểm tra conflict nhà hàng
   const addToCart = async (dish) => {
     if (!isAuthenticated) {
       setError('Vui lòng đăng nhập để thêm món vào giỏ hàng');
@@ -65,20 +73,47 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      console.log("Dish:", dish);
-      await apiAddToCart(dish.id, 1);
+      await apiAddToCart(dish.id, 1, false);
       await fetchCart();
+
     } catch (err) {
-      console.error('Lỗi thêm vào giỏ hàng:', err);
-      setError('Không thể thêm món vào giỏ hàng');
+      // console.log("err.response?.status:", err.response?.status);
+      if (err.addToCartResultType === "CONFLICT_DIFFERENT_RESTAURANT") {
+        // Conflict nhà hàng → mở modal xác nhận
+        setConfirmModal({ show: true, dish });
+      } else {
+        console.error('Lỗi thêm vào giỏ hàng:', err);
+        setError('Không thể thêm món vào giỏ hàng');
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // Xác nhận thay thế giỏ hàng
+  const handleConfirmReplace = async () => {
+    try {
+      if (!confirmModal.dish) return;
+      setLoading(true);
+      await apiAddToCart(confirmModal.dish.id, 1, true);
+      await fetchCart();
+    } catch (err) {
+      console.error("Lỗi khi xác nhận thay giỏ hàng:", err);
+      setError("Không thể thay đổi giỏ hàng");
+    } finally {
+      setConfirmModal({ show: false, dish: null });
+      setLoading(false);
+    }
+  };
+
+  // Huỷ thay giỏ hàng
+  const handleCancelReplace = () => {
+    setConfirmModal({ show: false, dish: null });
+  };
+
+  // Cập nhật số lượng
   const updateQuantity = async (dishId, quantity) => {
     if (!isAuthenticated) return;
-
     try {
       setLoading(true);
       setError(null);
@@ -92,9 +127,9 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Xoá món khỏi giỏ
   const removeFromCart = async (dishId) => {
     if (!isAuthenticated) return;
-
     try {
       setLoading(true);
       setError(null);
@@ -132,5 +167,45 @@ export const CartProvider = ({ children }) => {
     refreshCart: fetchCart,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+
+      {/* Modal xác nhận thay giỏ hàng */}
+      <Modal
+        show={confirmModal.show}
+        onHide={handleCancelReplace}
+        centered
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Thay đổi nhà hàng?</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <div className="d-flex align-items-start gap-3">
+            <i className="bi bi-exclamation-triangle-fill text-warning fs-3 mt-1"></i>
+            <div>
+              <p className="mb-2">
+                Giỏ hàng hiện tại đang chứa món ăn từ <strong>nhà hàng khác</strong>.
+              </p>
+              <p className="mb-0">
+                Bạn có muốn <strong>xóa giỏ hàng cũ</strong> và thêm món mới không?
+              </p>
+            </div>
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <button className="btn btn-secondary" onClick={handleCancelReplace}>
+            Hủy
+          </button>
+          <button className="btn btn-danger" onClick={handleConfirmReplace} style={{backgroundColor: '#6ec2cb', border: 'none'}}>
+            Đồng ý thay thế
+          </button>
+        </Modal.Footer>
+      </Modal>
+    </CartContext.Provider>
+  );
 };

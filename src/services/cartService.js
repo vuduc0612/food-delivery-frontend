@@ -20,13 +20,14 @@ export const getCart1 = async (token) => {
   return response.json();
 };
 
-export const addToCart = async (dishId, quantity) => {
+export const addToCart = async (dishId, quantity = 1, force = false) => {
   try {
     console.log("Dish ID:", dishId, "Quantity:", quantity);
     const response = await axiosClient.post("/orders/cart", null, {
       params: { 
         dishId: dishId, 
-        quantity: quantity 
+        quantity: quantity,
+        force: force
       },
     });
     console.log("Add to Cart Response:", response);
@@ -55,7 +56,7 @@ export const updateCartItem = async (dishId, quantity) => {
 
 export const removeCartItem = async (dishId) => {
   try {
-    const response = await axiosClient.delete(`/orders/cart/${dishId}`);
+    const response = await axiosClient.delete(`/orders/cart/dish/${dishId}`);
     console.log("Remove Cart Item Response:", response);
     return response;
   } catch (error) {
