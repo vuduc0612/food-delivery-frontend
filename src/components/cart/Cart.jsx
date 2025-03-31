@@ -3,18 +3,17 @@ import { BsX, BsTrash } from 'react-icons/bs';
 import { useCart } from '../../contexts/CartContext';
 
 const Cart = ({ isOpen, onClose }) => {
-  const { items, removeFromCart, updateQuantity } = useCart();
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { items, updateQuantity, removeFromCart, totalAmount } = useCart();
 
   const handleIncreaseQuantity = (item) => {
-    updateQuantity(item.id, item.quantity + 1);
+    updateQuantity(item.idDish, item.quantity + 1);
   };
 
   const handleDecreaseQuantity = (item) => {
     if (item.quantity > 1) {
-      updateQuantity(item.id, item.quantity - 1);
+      updateQuantity(item.idDish, item.quantity - 1);
     } else {
-      removeFromCart(item.id);
+      removeFromCart(item.idDish);
     }
   };
 
@@ -38,14 +37,14 @@ const Cart = ({ isOpen, onClose }) => {
           <>
             <div className="cart-items">
               {items.map((item) => (
-                <div key={item.id} className="cart-item">
+                <div key={item.idDish} className="cart-item">
                   <img src={item.thumbnail} alt={item.name} className="cart-item-img" />
                   <div className="cart-item-content">
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <h6 className="cart-item-title mb-0">{item.name}</h6>
-                      <button 
-                        className="btn text-danger p-0" 
-                        onClick={() => removeFromCart(item.id)}
+                      <button
+                        className="btn text-danger p-0"
+                        onClick={() => removeFromCart(item.idDish)}
                       >
                         <BsTrash />
                       </button>
@@ -54,14 +53,14 @@ const Cart = ({ isOpen, onClose }) => {
                       {(item.price * 1000).toLocaleString()}đ
                     </div>
                     <div className="cart-quantity">
-                      <button 
+                      <button
                         className="cart-quantity-btn"
                         onClick={() => handleDecreaseQuantity(item)}
                       >
                         <i className="bi bi-dash"></i>
                       </button>
                       <span className="mx-2">{item.quantity}</span>
-                      <button 
+                      <button
                         className="cart-quantity-btn"
                         onClick={() => handleIncreaseQuantity(item)}
                       >
@@ -77,7 +76,7 @@ const Cart = ({ isOpen, onClose }) => {
               <div className="cart-total">
                 <span>Tổng cộng</span>
                 <span className="cart-total-amount">
-                  {(total * 1000).toLocaleString()}đ
+                  {(totalAmount * 1000).toLocaleString()}đ
                 </span>
               </div>
               <button className="btn w-100" style={{ backgroundColor: '#7ed6df', color: 'white' }}>
@@ -91,4 +90,4 @@ const Cart = ({ isOpen, onClose }) => {
   );
 };
 
-export default Cart; 
+export default Cart;

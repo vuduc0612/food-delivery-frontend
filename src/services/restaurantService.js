@@ -1,19 +1,23 @@
-import { API_URL } from '../config';
-
+import { API_URL } from "../config";
+import axiosClient from "./axiosClient";
 export const fetchRestaurantById = async (id) => {
-  const res = await fetch(`${API_URL}/restaurants/${id}`);
-  if (!res.ok) {
-    throw new Error('Không tìm thấy nhà hàng');
+  try {
+    const response = await axiosClient.get(`/restaurants/${id}`);
+    //console.log("Restaurants API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Get Restaurants Error:", error);
+    throw error;
   }
-  const data = await res.json();
-  return data.data;
 };
 
 export const fetchRestaurants = async () => {
-  const res = await fetch(`${API_URL}/restaurants`);
-  if (!res.ok) {
-    throw new Error('Không thể tải danh sách nhà hàng');
+  try {
+    const response = await axiosClient.get("/restaurants");
+    //console.log("Restaurants API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Get Restaurants Error:", error);
+    throw error;
   }
-  const data = await res.json();
-  return data.data;
-};  
+};
