@@ -21,7 +21,11 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
             return true;
         } catch (err) {
-            setError(err.message);
+            if(err.status === 401){
+                setError("Tài khoản hoặc mật khẩu không chính xác!");
+            } else {
+                setError("Đăng nhập thất bại!");
+            }
             return false;
         } finally {
             setLoading(false);
@@ -35,7 +39,11 @@ export const AuthProvider = ({ children }) => {
             await registerApi(email, password);
             return true;
         } catch (err) {
-            setError(err.message);
+            if(err.status === 409){
+                setError("Tài khoảng đã tồn tại!");
+            } else {
+                setError("Đăng ký thất bại!");
+            }
             return false;
         } finally {
             setLoading(false);

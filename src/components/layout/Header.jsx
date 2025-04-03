@@ -4,18 +4,17 @@ import { Navbar, Container, Dropdown } from 'react-bootstrap';
 import { BsSearch, BsCart3, BsPerson, BsBoxArrowRight, BsPersonCircle, BsClipboardCheck } from 'react-icons/bs';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../hooks/useAuth';
-import LoginModal from '../auth/LoginModal';
+import AuthModal from '../auth/AuthModal';
 
 const Header = () => {
   const { toggleCart, items } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   
-
   const handleAuthClick = () => {
     if (!isAuthenticated) {
-      setShowLoginModal(true);
+      setShowAuthModal(true);
     }
   };
 
@@ -33,6 +32,7 @@ const Header = () => {
   return (
     <>
       <Navbar bg="white" expand="lg" className="sticky-top border-bottom py-4">
+        {/* Navbar content (unchanged) */}
         <Container>
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center" style={{ fontSize: '24px' }}>
             <span className="fw-bold" style={{ color: '#7ed6df' }}>Food</span>
@@ -140,12 +140,14 @@ const Header = () => {
         </Container>
       </Navbar>
 
-      <LoginModal 
-        show={showLoginModal} 
-        onHide={() => setShowLoginModal(false)} 
+      {/* Sử dụng AuthModal đơn giản hơn */}
+      <AuthModal 
+        show={showAuthModal} 
+        onHide={() => setShowAuthModal(false)} 
+        initialMode="login"
       />
     </>
   );
 };
 
-export default Header; 
+export default Header;

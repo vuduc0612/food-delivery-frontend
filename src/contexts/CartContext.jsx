@@ -73,18 +73,15 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      await apiAddToCart(dish.id, 1, false);
+      const response = await apiAddToCart(dish.id, 1, false);
+      if (response.addToCartResultType === "CONFLICT_DIFFERENT_RESTAURANT") {
+        setConfirmModal({ show: true, dish });
+      }
       await fetchCart();
 
     } catch (err) {
-      // console.log("err.response?.status:", err.response?.status);
-      if (err.addToCartResultType === "CONFLICT_DIFFERENT_RESTAURANT") {
-        // Conflict nhà hàng → mở modal xác nhận
-        setConfirmModal({ show: true, dish });
-      } else {
-        console.error('Lỗi thêm vào giỏ hàng:', err);
-        setError('Không thể thêm món vào giỏ hàng');
-      }
+      console.error('Lỗi thêm vào giỏ hàng:', err);
+      setError('Không thể thêm món vào giỏ hàng');
     } finally {
       setLoading(false);
     }
@@ -201,7 +198,7 @@ export const CartProvider = ({ children }) => {
           <button className="btn btn-secondary" onClick={handleCancelReplace}>
             Hủy
           </button>
-          <button className="btn btn-danger" onClick={handleConfirmReplace} style={{backgroundColor: '#6ec2cb', border: 'none'}}>
+          <button className="btn btn-danger" onClick={handleConfirmReplace} style={{ backgroundColor: '#6ec2cb', border: 'none' }}>
             Đồng ý thay thế
           </button>
         </Modal.Footer>

@@ -273,29 +273,34 @@ body {
 .cart-total-amount {
   color: #7ed6df;
   font-size: 18px;
-} 
+}
 
-.login-modal .modal-content {
+.login-modal .modal-content,
+.register-modal .modal-content {
   border: none;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.login-modal .modal-backdrop {
+.login-modal .modal-backdrop,
+.register-modal .modal-backdrop {
   backdrop-filter: blur(5px);
 }
 
-.login-modal .modal-title {
+.login-modal .modal-title,
+.register-modal .modal-title {
   color: #2d3436;
   font-size: 24px;
   font-weight: 700;
 }
 
-.login-modal .modal-description {
+.login-modal .modal-description,
+.register-modal .modal-description {
   font-size: 15px;
   color: #636e72;
 }
 
-.login-modal .form-control {
+.login-modal .form-control,
+.register-modal .form-control {
   height: 50px;
   background-color: #f8f9fa;
   border: 1px solid #e4e6eb;
@@ -305,13 +310,15 @@ body {
   transition: all 0.2s ease;
 }
 
-.login-modal .form-control:focus {
+.login-modal .form-control:focus,
+.register-modal .form-control:focus {
   box-shadow: none;
   border-color: #7ed6df;
   background-color: #fff;
 }
 
-.login-modal .input-icon {
+.login-modal .input-icon,
+.register-modal .input-icon {
   position: absolute;
   left: 15px;
   top: 50%;
@@ -320,7 +327,8 @@ body {
   font-size: 18px;
 }
 
-.login-modal .btn-primary {
+.login-modal .btn-primary,
+.register-modal .btn-primary {
   height: 50px;
   background-color: #7ed6df;
   border-color: #7ed6df;
@@ -330,17 +338,20 @@ body {
   transition: all 0.3s ease;
 }
 
-.login-modal .btn-primary:hover {
+.login-modal .btn-primary:hover,
+.register-modal .btn-primary:hover {
   background-color: #6ec2cb;
   border-color: #6ec2cb;
   transform: translateY(-1px);
 }
 
-.login-modal .btn-primary:active {
+.login-modal .btn-primary:active,
+.register-modal .btn-primary:active {
   transform: translateY(0);
 }
 
-.login-modal .btn-social {
+.login-modal .btn-social,
+.register-modal .btn-social {
   height: 50px;
   background-color: #ffffff;
   border: 1px solid #e4e6eb;
@@ -349,23 +360,27 @@ body {
   transition: all 0.2s ease;
 }
 
-.login-modal .btn-social:hover {
+.login-modal .btn-social:hover,
+.register-modal .btn-social:hover {
   background-color: #f8f9fa;
   border-color: #7ed6df;
 }
 
-.login-modal .divider {
+.login-modal .divider,
+.register-modal .divider {
   position: relative;
   text-align: center;
   margin: 1.5rem 0;
 }
 
-.login-modal .divider hr {
+.login-modal .divider hr,
+.register-modal .divider hr {
   border-color: #e4e6eb;
   opacity: 0.25;
 }
 
-.login-modal .divider-text {
+.login-modal .divider-text,
+.register-modal .divider-text {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -376,7 +391,8 @@ body {
   font-size: 14px;
 }
 
-.login-modal .error-alert {
+.login-modal .error-alert,
+.register-modal .error-alert {
   font-size: 14px;
   background-color: rgba(255, 0, 0, 0.1);
   border: none;
@@ -384,18 +400,21 @@ body {
   padding: 0.5rem 1rem;
 }
 
-.login-modal .btn-link {
+.login-modal .btn-link,
+.register-modal .btn-link {
   color: #7ed6df;
   text-decoration: none;
   font-size: 14px;
   padding: 0;
 }
 
-.login-modal .btn-link:hover {
+.login-modal .btn-link:hover,
+.register-modal .btn-link:hover {
   color: #6ec2cb;
 }
 
-.login-modal .close-button {
+.login-modal .close-button,
+.register-modal .close-button {
   position: absolute;
   right: -10px;
   top: 50%;
@@ -407,11 +426,13 @@ body {
   transition: color 0.2s ease;
 }
 
-.login-modal .close-button:hover {
+.login-modal .close-button:hover,
+.register-modal .close-button:hover {
   color: #2d3436;
 }
 
-.login-modal .spinner-wrapper {
+.login-modal .spinner-wrapper,
+.register-modal .spinner-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -429,6 +450,33 @@ body {
   }
 }
 
-.login-modal .modal-content {
+.login-modal .modal-content,
+.register-modal .modal-content {
   animation: fadeIn 0.3s ease;
+}
+
+.login-modal .show-password-button,
+.register-modal .show-password-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  color: #636e72;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-modal .show-password-button:hover,
+.register-modal .show-password-button:hover {
+  color: #2d3436;
+}
+
+.login-modal .show-password-button:focus,
+.register-modal .show-password-button:focus {
+  box-shadow: none;
 } 

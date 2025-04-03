@@ -6,14 +6,14 @@ const Cart = ({ isOpen, onClose }) => {
   const { items, updateQuantity, removeFromCart, totalAmount } = useCart();
 
   const handleIncreaseQuantity = (item) => {
-    updateQuantity(item.idDish, item.quantity + 1);
+    updateQuantity(item.dishId, item.quantity + 1);
   };
 
   const handleDecreaseQuantity = (item) => {
     if (item.quantity > 1) {
-      updateQuantity(item.idDish, item.quantity - 1);
+      updateQuantity(item.dishId, item.quantity - 1);
     } else {
-      removeFromCart(item.idDish);
+      removeFromCart(item.dishId);
     }
   };
 
@@ -37,14 +37,14 @@ const Cart = ({ isOpen, onClose }) => {
           <>
             <div className="cart-items">
               {items.map((item) => (
-                <div key={item.idDish} className="cart-item">
+                <div key={item.dishId} className="cart-item">
                   <img src={item.thumbnail} alt={item.name} className="cart-item-img" />
                   <div className="cart-item-content">
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <h6 className="cart-item-title mb-0">{item.name}</h6>
                       <button
                         className="btn text-danger p-0"
-                        onClick={() => removeFromCart(item.idDish)}
+                        onClick={() => removeFromCart(item.dishId)}
                       >
                         <BsTrash />
                       </button>

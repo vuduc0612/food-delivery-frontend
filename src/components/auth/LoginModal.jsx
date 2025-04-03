@@ -1,54 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
-import { useAuth } from '../../hooks/useAuth'; 
+import { BsEnvelope, BsLock, BsX, BsEye, BsEyeSlash } from 'react-icons/bs';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
-import { BsEnvelope, BsLock, BsX } from 'react-icons/bs';
+import { AuthContext } from '../../contexts/AuthContext';
 
-
-const LoginModal = ({ show, onHide }) => {
-  const { login, register, loading, error, setError } = useAuth();
+const LoginModal = ({ onHide, onSwitchToRegister }) => {
+  const { login, loading, error, setError } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Reset state when modal closes
+  // Reset state khi component unmount
   useEffect(() => {
-    if (!show) {
-      setIsLogin(true);
+    return () => {
       setEmail('');
       setPassword('');
       setError(null);
-    }
-  }, [show, setError]);
+    };
+  }, [setError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = isLogin 
-      ? await login(email, password)
-      : await register(email, password);
-      
+    const success = await login(email, password);
     if (success) {
       onHide();
     }
   };
 
-  const toggleMode = () => {
-    setIsLogin(!isLogin);
-    setError(null);
-  };
-
   return (
-    <Modal 
-      show={show} 
-      onHide={onHide} 
-      centered
-      dialogClassName="login-modal"
-    >
+    <>
       <Modal.Header className="border-0 pb-0 px-4 pt-4">
         <Modal.Title className="w-100 text-center position-relative">
-          <h4 className="mb-0">
-            {isLogin ? 'Chào mừng trở lại! 👋' : 'Tạo tài khoản mới ✨'}
-          </h4>
+          <h4 className="mb-0">Chào mừng trở lại! 👋</h4>
           <Button
             variant="link"
             onClick={onHide}
@@ -61,9 +44,7 @@ const LoginModal = ({ show, onHide }) => {
 
       <Modal.Body className="px-4 pt-3">
         <p className="modal-description text-center mb-4">
-          {isLogin 
-            ? 'Đăng nhập để tiếp tục mua sắm của bạn' 
-            : 'Đăng ký để trải nghiệm dịch vụ tốt nhất từ chúng tôi'}
+          Đăng nhập để tiếp tục mua sắm của bạn
         </p>
 
         {error && (
@@ -87,21 +68,27 @@ const LoginModal = ({ show, onHide }) => {
           <Form.Group className="mb-4 position-relative">
             <BsLock className="input-icon" />
             <Form.Control
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Mật khẩu"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <Button
+              variant="link"
+              className="show-password-button"
+              onClick={() => setShowPassword(!showPassword)}
+              type="button"
+            >
+              {showPassword ? <BsEyeSlash /> : <BsEye />}
+            </Button>
           </Form.Group>
 
-          {isLogin && (
-            <div className="text-end mb-4">
-              <Button variant="link">
-                Quên mật khẩu?
-              </Button>
-            </div>
-          )}
+          <div className="text-end mb-4">
+            <Button variant="link">
+              Quên mật khẩu?
+            </Button>
+          </div>
 
           <div className="d-grid gap-3">
             <Button 
@@ -111,7 +98,7 @@ const LoginModal = ({ show, onHide }) => {
               className="position-relative overflow-hidden"
             >
               <div className={loading ? 'opacity-0' : ''}>
-                {isLogin ? 'Đăng nhập' : 'Đăng ký'}
+                Đăng nhập
               </div>
               {loading && (
                 <div className="spinner-wrapper">
@@ -150,16 +137,16 @@ const LoginModal = ({ show, onHide }) => {
             <div className="text-center mt-4">
               <Button
                 variant="link"
-                onClick={toggleMode}
+                onClick={onSwitchToRegister}
               >
-                {isLogin ? 'Chưa có tài khoản? Đăng ký ngay' : 'Đã có tài khoản? Đăng nhập'}
+                Chưa có tài khoản? Đăng ký ngay
               </Button>
             </div>
           </div>
         </Form>
       </Modal.Body>
-    </Modal>
+    </>
   );
 };
 
-export default LoginModal; 
+export default LoginModal;

@@ -26,8 +26,11 @@ axiosClient.interceptors.request.use(
 // Add a response interceptor
 axiosClient.interceptors.response.use(
   (response) => {
-    // Nếu response.data đã là data cần thiết thì trả về luôn
-    
+    // Nếu response.data có data property thì trả về data
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+    // Nếu không có data property thì trả về response.data
     return response.data;
   },
   (error) => {

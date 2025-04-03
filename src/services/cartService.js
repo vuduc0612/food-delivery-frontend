@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 import { API_URL } from "../config";
 export const getCart = async () => {
   try {
-    const response = await axiosClient.get("/orders/cart");
+    const response = await axiosClient.get("/carts");
     //console.log("Cart API Response:", response);
     return response;
   } catch (error) {
@@ -12,25 +12,25 @@ export const getCart = async () => {
 };
 
 export const getCart1 = async (token) => {
-  const response = await fetch(`${API_URL}/orders/cart`, {
+  const response = await fetch(`${API_URL}/carts`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.json();
+  const data = await response.json();
+  // console.log("Cart API Response:", data);
+  return data.data;
 };
 
 export const addToCart = async (dishId, quantity = 1, force = false) => {
   try {
-    console.log("Dish ID:", dishId, "Quantity:", quantity);
-    const response = await axiosClient.post("/orders/cart", null, {
-      params: { 
-        dishId: dishId, 
-        quantity: quantity,
-        force: force
-      },
+    //console.log("Dish ID:", dishId, "Quantity:", quantity);
+    const response = await axiosClient.post("/carts", {
+      dishId: dishId,
+      quantity: quantity,
+      force: force,
     });
-    console.log("Add to Cart Response:", response);
+    //console.log("Add to Cart Response:", response);
     return response;
   } catch (error) {
     console.error("Add to Cart Error:", error);
@@ -40,13 +40,12 @@ export const addToCart = async (dishId, quantity = 1, force = false) => {
 
 export const updateCartItem = async (dishId, quantity) => {
   try {
-    const response = await axiosClient.put("/orders/cart", null, {
-      params: {
-        dishId: dishId,
-        quantity: quantity,
-      },
-    });
-    console.log("Update Cart Response:", response);
+    const response = await axiosClient.patch(
+      `/carts/dish/${dishId}`, {
+        quantity: quantity
+      }
+    );
+    //console.log("Update Cart Response:", response);
     return response;
   } catch (error) {
     console.error("Update Cart Error:", error);
@@ -56,8 +55,8 @@ export const updateCartItem = async (dishId, quantity) => {
 
 export const removeCartItem = async (dishId) => {
   try {
-    const response = await axiosClient.delete(`/orders/cart/dish/${dishId}`);
-    console.log("Remove Cart Item Response:", response);
+    const response = await axiosClient.delete(`/carts/dish/${dishId}`);
+    //console.log("Remove Cart Item Response:", response);
     return response;
   } catch (error) {
     console.error("Remove Cart Item Error:", error);

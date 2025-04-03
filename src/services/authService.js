@@ -16,6 +16,7 @@ export const registerApi = async (email, password) => {
     email,
     password,
   });
+  //console.log("Register Response:", response);
   return response;
 };
 
