@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { useCart } from '../../../contexts/CartContext';
 import { useAuth } from '../../../hooks/useAuth';
-import LoginModal from '../../auth/LoginModal';
+import AuthModal from '../../auth/AuthModal';
 
 const DishCard = ({ dish }) => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
-      setShowLoginModal(true);
+      setShowAuthModal(true);
       return;
     }
     addToCart(dish);
@@ -51,9 +51,10 @@ const DishCard = ({ dish }) => {
         </Row>
       </Card>
 
-      <LoginModal 
-        show={showLoginModal} 
-        onHide={() => setShowLoginModal(false)}
+      <AuthModal 
+        show={showAuthModal}
+        onHide={() => setShowAuthModal(false)}
+        initialMode="login"
       />
     </>
   );

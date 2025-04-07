@@ -24,11 +24,13 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
-
+  const [restaurant, setRestaurant] = useState(null);
+  const [user, setUser] = useState(null);
   // Modal xác nhận thêm món từ nhà hàng khác
   const [confirmModal, setConfirmModal] = useState({
     show: false,
     dish: null,
+    newRestaurant: null
   });
 
   // Lấy giỏ hàng từ backend
@@ -36,6 +38,8 @@ export const CartProvider = ({ children }) => {
     if (!isAuthenticated) {
       setItems([]);
       setTotalAmount(0);
+      setRestaurant(null);
+      setUser(null);
       return;
     }
 
@@ -48,23 +52,29 @@ export const CartProvider = ({ children }) => {
       if (cartData && Array.isArray(cartData.items)) {
         setItems(cartData.items);
         setTotalAmount(cartData.totalAmount || 0);
+        setRestaurant(cartData.restaurant || null);
+        setUser(cartData.user || null);
       } else {
         console.warn("Invalid cart data format:", cartData);
         setItems([]);
         setTotalAmount(0);
+        setRestaurant(null);
+        setUser(null);
       }
     } catch (err) {
       console.error('Lỗi lấy giỏ hàng:', err);
       setError('Không thể lấy thông tin giỏ hàng');
       setItems([]);
       setTotalAmount(0);
+      setRestaurant(null);
+      setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
   // Thêm món vào giỏ, kiểm tra conflict nhà hàng
-  const addToCart = async (dish) => {
+  const addToCart = async (dish, restaurant) => {
     if (!isAuthenticated) {
       setError('Vui lòng đăng nhập để thêm món vào giỏ hàng');
       return;
@@ -74,10 +84,16 @@ export const CartProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       const response = await apiAddToCart(dish.id, 1, false);
+      
       if (response.addToCartResultType === "CONFLICT_DIFFERENT_RESTAURANT") {
-        setConfirmModal({ show: true, dish });
+        setConfirmModal({ 
+          show: true, 
+          dish,
+          newRestaurant: restaurant
+        });
+      } else {
+        await fetchCart();
       }
-      await fetchCart();
 
     } catch (err) {
       console.error('Lỗi thêm vào giỏ hàng:', err);
@@ -98,14 +114,14 @@ export const CartProvider = ({ children }) => {
       console.error("Lỗi khi xác nhận thay giỏ hàng:", err);
       setError("Không thể thay đổi giỏ hàng");
     } finally {
-      setConfirmModal({ show: false, dish: null });
+      setConfirmModal({ show: false, dish: null, newRestaurant: null });
       setLoading(false);
     }
   };
 
   // Huỷ thay giỏ hàng
   const handleCancelReplace = () => {
-    setConfirmModal({ show: false, dish: null });
+    setConfirmModal({ show: false, dish: null, newRestaurant: null });
   };
 
   // Cập nhật số lượng
@@ -148,6 +164,8 @@ export const CartProvider = ({ children }) => {
     } else {
       setItems([]);
       setTotalAmount(0);
+      setRestaurant(null);
+      setUser(null);
     }
   }, [isAuthenticated]);
 
@@ -157,6 +175,8 @@ export const CartProvider = ({ children }) => {
     totalAmount,
     loading,
     error,
+    restaurant,
+    user,
     addToCart,
     updateQuantity,
     removeFromCart,
@@ -185,10 +205,10 @@ export const CartProvider = ({ children }) => {
             <i className="bi bi-exclamation-triangle-fill text-warning fs-3 mt-1"></i>
             <div>
               <p className="mb-2">
-                Giỏ hàng hiện tại đang chứa món ăn từ <strong>nhà hàng khác</strong>.
+                Giỏ hàng hiện tại đang chứa món ăn từ <strong>{restaurant?.name}</strong>.
               </p>
               <p className="mb-0">
-                Bạn có muốn <strong>xóa giỏ hàng cũ</strong> và thêm món mới không?
+                Bạn có muốn <strong>xóa giỏ hàng cũ</strong> và thêm món từ <strong>{confirmModal.newRestaurant?.name}</strong> không?
               </p>
             </div>
           </div>

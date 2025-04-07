@@ -1,9 +1,11 @@
 import React from 'react';
 import { BsX, BsTrash } from 'react-icons/bs';
 import { useCart } from '../../contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ isOpen, onClose }) => {
   const { items, updateQuantity, removeFromCart, totalAmount } = useCart();
+  const navigate = useNavigate();
 
   const handleIncreaseQuantity = (item) => {
     updateQuantity(item.dishId, item.quantity + 1);
@@ -15,6 +17,11 @@ const Cart = ({ isOpen, onClose }) => {
     } else {
       removeFromCart(item.dishId);
     }
+  };
+
+  const handleViewOrder = () => {
+    onClose(); // Đóng giỏ hàng
+    navigate('/checkout'); // Chuyển đến trang thanh toán
   };
 
   return (
@@ -79,8 +86,12 @@ const Cart = ({ isOpen, onClose }) => {
                   {(totalAmount * 1000).toLocaleString()}đ
                 </span>
               </div>
-              <button className="btn w-100" style={{ backgroundColor: '#7ed6df', color: 'white' }}>
-                Thanh toán
+              <button 
+                className="btn w-100" 
+                style={{ backgroundColor: '#7ed6df', color: 'white' }}
+                onClick={handleViewOrder}
+              >
+                Xem đơn hàng
               </button>
             </div>
           </>
