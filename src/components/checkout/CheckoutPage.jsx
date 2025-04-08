@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { BsArrowLeft, BsPlus, BsGeoAlt, BsTrash, BsPencil } from 'react-icons/bs';
 import { useCart } from '../../contexts/CartContext';
 import { useOrder } from '../../contexts/OrderContext';
+import { useLocation } from '../../contexts/LocationContext';
+import { calculateDeliveryFee } from '../../services/deliveryService';
+
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { items, totalAmount, updateQuantity, removeFromCart, restaurant, user } = useCart();
   const { createOrder, loading, error } = useOrder();
-
+  const { selectedLocation, setOnDeliveryFeeRecalculate } = useLocation();
+  const [deliveryFee, setDeliveryFee] = useState(20000); // phí mặc định/fallback
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
@@ -25,6 +29,20 @@ const CheckoutPage = () => {
   const handleApplyPromo = () => {
     // TODO: Implement promo code logic
     setPromoError('Mã giảm giá không hợp lệ');
+  };
+
+  const calculateFee = async (location) => {
+    if (!restaurant || !location?.coordinates) return;
+  
+    const from = {
+      lat: 20.995649,
+      lng: 105.808653
+    }; // đảm bảo object restaurant có field này!
+    const to = location.coordinates;
+    console.log(from, to);
+  
+    const fee = await calculateDeliveryFee(from, to);
+    setDeliveryFee(fee);
   };
 
   const handlePayment = async (e) => {
@@ -43,6 +61,17 @@ const CheckoutPage = () => {
       console.error('Lỗi khi tạo đơn hàng:', err);
     }
   };
+  useEffect(() => {
+    setOnDeliveryFeeRecalculate((location) => {
+      calculateFee(location);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedLocation?.coordinates) {
+      calculateFee(selectedLocation);
+    }
+  }, [selectedLocation, restaurant]);
 
   if (items.length === 0) {
     return (
@@ -87,22 +116,22 @@ const CheckoutPage = () => {
 
         <Row>
           <Col lg={8}>
-            <Card className="delivery-card">
+            <Card className="delivery-card pt-0 px-3 py-3">
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h5 className="mb-0">Giao tới</h5>
-                  <Button variant="link" className="p-0 text-decoration-none">
+                  <h5 className="mb-2">Giao tới</h5>
+                  {/* <Button variant="link" className="p-0 text-decoration-none">
                     <BsPencil className="me-1" />
                     Chỉnh sửa
-                  </Button>
+                  </Button> */}
                 </div>
                 <div className="delivery-address">
                   <div className="address-icon">
                     <BsGeoAlt />
                   </div>
                   <div className="address-content">
-                    
-                    <div className="user-address">{user?.address}</div>
+
+                    <div className="user-address">{selectedLocation.address}</div>
                   </div>
                 </div>
                 <Form>
@@ -120,18 +149,20 @@ const CheckoutPage = () => {
               </Card.Body>
             </Card>
 
-            <Card className="order-items-card">
+            <Card className="order-items-card pt-1 pb-2 px-3">
               <Card.Body>
                 <div className="order-items-header">
                   <h5>Đơn hàng</h5>
-                  <Button
-                    variant="link"
-                    className="add-more-btn p-0"
-                    onClick={() => navigate(`/restaurant/${restaurant?.id}`)}
+                  <a
+                    href="#"
+                    className="add-more-btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/restaurant/${restaurant?.id}`);
+                    }}
                   >
-                    <BsPlus />
                     Thêm món
-                  </Button>
+                  </a>
                 </div>
                 {items.map((item) => (
                   <div key={item.dishId} className="order-item">
@@ -149,7 +180,7 @@ const CheckoutPage = () => {
                     <div className="quantity-controls">
                       <Button
                         variant="outline-secondary"
-                        className="quantity-btn"
+                        className="quantity-btn p-0"
                         onClick={() => handleQuantityChange(item.dishId, item.quantity - 1)}
                       >
                         <i className="bi bi-dash"></i>
@@ -157,7 +188,7 @@ const CheckoutPage = () => {
                       <span>{item.quantity}</span>
                       <Button
                         variant="outline-secondary"
-                        className="quantity-btn"
+                        className="quantity-btn p-0"
                         onClick={() => handleQuantityChange(item.dishId, item.quantity + 1)}
                       >
                         <i className="bi bi-plus"></i>
@@ -191,15 +222,13 @@ const CheckoutPage = () => {
                       <option value="cash">
                         💵 Tiền mặt
                       </option>
-                      <option value="zalo">
-                        💳 ZaloPay
+                      <option value="vnpay">
+                        💳 VnPay
                       </option>
                       <option value="momo">
                         💳 Momo
                       </option>
-                      <option value="card">
-                        💳 Thẻ ngân hàng
-                      </option>
+
                     </Form.Select>
                   </div>
 
@@ -232,17 +261,17 @@ const CheckoutPage = () => {
                   </div>
                   <div className="summary-row">
                     <span>Phí áp dụng</span>
-                    <span>20.000đ</span>
+                    <span>{(deliveryFee.fee)?.toLocaleString()}đ</span>
                   </div>
                   <div className="summary-row total">
                     <span>Tổng số tiền</span>
-                    <span>{(totalAmount * 1000 + 20000).toLocaleString()}đ</span>
+                    <span>{(totalAmount * 1000 + deliveryFee.fee).toLocaleString()}đ</span>
                   </div>
                   <Button
-                    
+
                     className="checkout-btn w-100"
                     onClick={handlePayment}
-                    
+
                   >
                     {loading ? 'Đang xử lý...' : 'Đặt món'}
                   </Button>

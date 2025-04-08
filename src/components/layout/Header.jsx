@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Container, Dropdown } from 'react-bootstrap';
-import { BsSearch, BsCart3, BsPerson, BsBoxArrowRight, BsPersonCircle, BsClipboardCheck } from 'react-icons/bs';
+import { BsCart3, BsPerson, BsBoxArrowRight, BsPersonCircle, BsClipboardCheck } from 'react-icons/bs';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../hooks/useAuth';
+import { useLocation } from '../../contexts/LocationContext';
 import AuthModal from '../auth/AuthModal';
+import LocationSearch from '../common/LocationSearch';
 
 const Header = () => {
   const { toggleCart, items } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
+  const { selectedLocation, updateLocation } = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   
@@ -16,6 +19,10 @@ const Header = () => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
     }
+  };
+
+  const handleLocationSelect = (location) => {
+    updateLocation(location);
   };
 
   const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -32,7 +39,6 @@ const Header = () => {
   return (
     <>
       <Navbar bg="white" expand="lg" className="sticky-top border-bottom py-4">
-        {/* Navbar content (unchanged) */}
         <Container>
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center" style={{ fontSize: '24px' }}>
             <span className="fw-bold" style={{ color: '#7ed6df' }}>Food</span>
@@ -40,18 +46,22 @@ const Header = () => {
           </Navbar.Brand>
 
           <div className="d-flex flex-grow-1 justify-content-between align-items-center">
-            <div className="position-relative mx-5" style={{ width: '380px' }}>
-              <input
-                type="search"
-                placeholder="Tìm kiếm địa điểm"
-                className="custom-search w-100 ps-5 py-2 border-0"
+            <div className="position-relative mx-5" style={{ width: '500px' }}>
+              <LocationSearch 
+                onLocationSelect={handleLocationSelect}
+                placeholder={
+                  <div className="d-flex align-items-center" style={{ fontSize: '14px', color: '#2d3436' }}>
+                    <div className="d-flex align-items-center me-2">
+                      <i className="bi bi-circle-fill me-2" style={{ color: '#dc3545', fontSize: '8px' }}></i>
+                      {selectedLocation.shortAddress}
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-geo-alt-fill me-1" style={{ color: '#6c757d' }}></i>
+                      {selectedLocation.fullAddress}
+                    </div>
+                  </div>
+                }
               />
-              <BsSearch className="search-icon position-absolute" style={{ 
-                left: '20px', 
-                top: '50%', 
-                transform: 'translateY(-50%)',
-                fontSize: '18px'
-              }} />
             </div>
 
             <div className="d-flex align-items-center gap-5">
@@ -140,7 +150,6 @@ const Header = () => {
         </Container>
       </Navbar>
 
-      {/* Sử dụng AuthModal đơn giản hơn */}
       <AuthModal 
         show={showAuthModal} 
         onHide={() => setShowAuthModal(false)} 

@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.16.1",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.3",
     "js-cookie": "^3.0.5",
+    "mapbox-gl": "^3.11.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.2.0",

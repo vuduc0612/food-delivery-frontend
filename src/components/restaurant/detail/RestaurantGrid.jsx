@@ -3,7 +3,8 @@ import { Row, Col } from 'react-bootstrap';
 import RestaurantCard from './RestaurantCard';
 
 const RestaurantGrid = ({ restaurants }) => {
-  return (
+  return (<>
+    <h2 className="mb-3 mt-5">Nhà hàng gần bạn</h2> 
     <Row xs={1} md={2} lg={3} className="g-4">
       {restaurants.map(restaurant => (
         <Col key={restaurant.id}>
@@ -11,6 +12,7 @@ const RestaurantGrid = ({ restaurants }) => {
         </Col>
       ))}
     </Row>
+    </>
   );
 };
 

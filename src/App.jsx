@@ -1,14 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/layout/Header';
-import RestaurantList from './components/restaurant/RestaurantList';
-import RestaurantDetail from './components/restaurant/RestaurantDetail';
-import CheckoutPage from './components/checkout/CheckoutPage';
-import { CartProvider } from './contexts/CartContext';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider, useCart } from './contexts/CartContext';
 import { OrderProvider } from './contexts/OrderContext';
+import { LocationProvider } from './contexts/LocationContext';
+import Header from './components/layout/Header';
 import Cart from './components/cart/Cart';
-import { useCart } from './contexts/CartContext';
+import AppRoutes from './routes';
+import './index.css';
 
 const AppContent = () => {
   const { isOpen, toggleCart, items } = useCart();
@@ -18,11 +17,7 @@ const AppContent = () => {
       <Header />
       <Cart isOpen={isOpen} onClose={toggleCart} cartItems={items} />
       <main className="flex-grow-1">
-        <Routes>
-          <Route path="/" element={<RestaurantList />} />
-          <Route path="/restaurant/:id" element={<RestaurantDetail />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-        </Routes>
+        <AppRoutes />
       </main>
     </div>
   );
@@ -32,14 +27,16 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <CartProvider>
-          <OrderProvider>
-            <AppContent />
-          </OrderProvider>
-        </CartProvider>
+        <LocationProvider>
+          <CartProvider>
+            <OrderProvider>
+              <AppContent />
+            </OrderProvider>
+          </CartProvider>
+        </LocationProvider>
       </AuthProvider>
     </Router>
   );
 };
 
-export default App;
+export default App; 
