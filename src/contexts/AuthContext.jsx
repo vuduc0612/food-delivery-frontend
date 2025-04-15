@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { getAuthToken, setAuthToken, removeAuthToken } from '../utils/authToken';
-import { getProfile, loginApi, registerApi } from '../services/authService';
+import { getProfile, loginApi, registerApi, verifyOtpApi } from '../services/authService';
 
 
 export const AuthContext = createContext();
@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true); // loading khi khởi tạo app
     const [error, setError] = useState(null);
+    const [registeredUser, setRegisteredUser] = useState(null); // Lưu thông tin người dùng đăng ký để xác thực OTP
 
     const login = async (email, password) => {
         try {
@@ -32,15 +33,17 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const register = async (email, password) => {
+    const register = async (userData) => {
         try {
             setError(null);
             setLoading(true);
-            await registerApi(email, password);
+            await registerApi(userData);
+            // Lưu thông tin người dùng để xác thực OTP sau này
+            setRegisteredUser(userData);
             return true;
         } catch (err) {
             if(err.status === 409){
-                setError("Tài khoảng đã tồn tại!");
+                setError("Tài khoản đã tồn tại!");
             } else {
                 setError("Đăng ký thất bại!");
             }
@@ -48,6 +51,29 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const verifyOtp = async (otp) => {
+        if (!registeredUser) {
+            setError("Không có thông tin đăng ký!");
+            return false;
+        }
+
+        try {
+            setError(null);
+            setLoading(true);
+            await verifyOtpApi(registeredUser, otp);
+            return true;
+        } catch (err) {
+            setError("Xác thực OTP thất bại!");
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const clearRegisteredUser = () => {
+        setRegisteredUser(null);
     };
 
     const logout = () => {
@@ -76,7 +102,19 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loading, error, setError, login, register, logout, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ 
+            user, 
+            loading, 
+            error, 
+            setError, 
+            login, 
+            register, 
+            verifyOtp,
+            registeredUser,
+            clearRegisteredUser,
+            logout, 
+            isAuthenticated: !!user 
+        }}>
             {children}
         </AuthContext.Provider>
     );

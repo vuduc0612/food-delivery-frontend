@@ -4,7 +4,7 @@ import { BsEnvelope, BsLock, BsX, BsEye, BsEyeSlash } from 'react-icons/bs';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { AuthContext } from '../../contexts/AuthContext';
 
-const LoginModal = ({ onHide, onSwitchToRegister }) => {
+const LoginModal = ({ onHide, onSwitchToRegister, onSwitchToForgotPassword }) => {
   const { login, loading, error, setError } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -85,7 +85,10 @@ const LoginModal = ({ onHide, onSwitchToRegister }) => {
           </Form.Group>
 
           <div className="text-end mb-4">
-            <Button variant="link">
+            <Button 
+              variant="link"
+              onClick={onSwitchToForgotPassword}
+            >
               Quên mật khẩu?
             </Button>
           </div>
@@ -142,6 +145,7 @@ const LoginModal = ({ onHide, onSwitchToRegister }) => {
                 Chưa có tài khoản? Đăng ký ngay
               </Button>
             </div>
+
           </div>
         </Form>
       </Modal.Body>

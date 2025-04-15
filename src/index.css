@@ -276,31 +276,50 @@ body {
 }
 
 .login-modal .modal-content,
-.register-modal .modal-content {
+.register-modal .modal-content,
+.forgot-password-modal .modal-content,
+.verify-otp-modal .modal-content,
+.reset-password-modal .modal-content,
+.success-modal .modal-content {
   border: none;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .login-modal .modal-backdrop,
-.register-modal .modal-backdrop {
+.register-modal .modal-backdrop,
+.forgot-password-modal .modal-backdrop,
+.verify-otp-modal .modal-backdrop,
+.reset-password-modal .modal-backdrop,
+.success-modal .modal-backdrop {
   backdrop-filter: blur(5px);
 }
 
 .login-modal .modal-title,
-.register-modal .modal-title {
+.register-modal .modal-title,
+.forgot-password-modal .modal-title,
+.verify-otp-modal .modal-title,
+.reset-password-modal .modal-title,
+.success-modal .modal-title {
   color: #2d3436;
   font-size: 24px;
   font-weight: 700;
 }
 
 .login-modal .modal-description,
-.register-modal .modal-description {
+.register-modal .modal-description,
+.forgot-password-modal .modal-description,
+.verify-otp-modal .modal-description,
+.reset-password-modal .modal-description,
+.success-modal .modal-description {
   font-size: 15px;
   color: #636e72;
 }
 
 .login-modal .form-control,
-.register-modal .form-control {
+.register-modal .form-control,
+.reset-password-modal .form-control,
+.verify-otp-modal .form-control,
+.forgot-password-modal .form-control{
   height: 50px;
   background-color: #f8f9fa;
   border: 1px solid #e4e6eb;
@@ -311,14 +330,20 @@ body {
 }
 
 .login-modal .form-control:focus,
-.register-modal .form-control:focus {
+.register-modal .form-control:focus,
+.reset-password-modal .form-control:focus,
+.verify-otp-modal .form-control:focus,
+.forgot-password-modal .form-control:focus{
   box-shadow: none;
   border-color: #7ed6df;
   background-color: #fff;
 }
 
 .login-modal .input-icon,
-.register-modal .input-icon {
+.register-modal .input-icon,
+.reset-password-modal .input-icon,
+.verify-otp-modal .input-icon,
+.forgot-password-modal .input-icon{
   position: absolute;
   left: 15px;
   top: 50%;
@@ -328,7 +353,11 @@ body {
 }
 
 .login-modal .btn-primary,
-.register-modal .btn-primary {
+.register-modal .btn-primary,
+.reset-password-modal .btn-primary,
+.verify-otp-modal .btn-primary,
+.forgot-password-modal .btn-primary,
+.success-modal .btn-primary {
   height: 50px;
   background-color: #7ed6df;
   border-color: #7ed6df;
@@ -339,19 +368,31 @@ body {
 }
 
 .login-modal .btn-primary:hover,
-.register-modal .btn-primary:hover {
+.register-modal .btn-primary:hover,
+.reset-password-modal .btn-primary:hover,
+.verify-otp-modal .btn-primary:hover,
+.forgot-password-modal .btn-primary:hover,
+.success-modal .btn-primary:hover {
   background-color: #6ec2cb;
   border-color: #6ec2cb;
   transform: translateY(-1px);
 }
 
 .login-modal .btn-primary:active,
-.register-modal .btn-primary:active {
+.register-modal .btn-primary:active,
+.reset-password-modal .btn-primary:active,
+.verify-otp-modal .btn-primary:active,
+.forgot-password-modal .btn-primary:active,
+.success-modal .btn-primary:active {
   transform: translateY(0);
 }
 
 .login-modal .btn-social,
-.register-modal .btn-social {
+.register-modal .btn-social,
+.reset-password-modal .btn-social,
+.verify-otp-modal .btn-social,
+.forgot-password-modal .btn-social,
+.success-modal .btn-social {
   height: 50px;
   background-color: #ffffff;
   border: 1px solid #e4e6eb;
@@ -361,26 +402,42 @@ body {
 }
 
 .login-modal .btn-social:hover,
-.register-modal .btn-social:hover {
+.register-modal .btn-social:hover,
+.reset-password-modal .btn-social:hover,
+.verify-otp-modal .btn-social:hover,
+.forgot-password-modal .btn-social:hover,
+.success-modal .btn-social:hover {
   background-color: #f8f9fa;
   border-color: #7ed6df;
 }
 
 .login-modal .divider,
-.register-modal .divider {
+.register-modal .divider,
+.reset-password-modal .divider,
+.verify-otp-modal .divider,
+.forgot-password-modal .divider,
+.success-modal .divider {
   position: relative;
   text-align: center;
   margin: 1.5rem 0;
 }
 
 .login-modal .divider hr,
-.register-modal .divider hr {
+.register-modal .divider hr,
+.reset-password-modal .divider hr,
+.verify-otp-modal .divider hr,
+.forgot-password-modal .divider hr,
+.success-modal .divider hr {
   border-color: #e4e6eb;
   opacity: 0.25;
 }
 
 .login-modal .divider-text,
-.register-modal .divider-text {
+.register-modal .divider-text,
+.reset-password-modal .divider-text,
+.verify-otp-modal .divider-text,
+.forgot-password-modal .divider-text,
+.success-modal .divider-text {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -392,7 +449,11 @@ body {
 }
 
 .login-modal .error-alert,
-.register-modal .error-alert {
+.register-modal .error-alert,
+.reset-password-modal .error-alert,
+.verify-otp-modal .error-alert,
+.forgot-password-modal .error-alert,
+.success-modal .error-alert {
   font-size: 14px;
   background-color: rgba(255, 0, 0, 0.1);
   border: none;
@@ -401,7 +462,11 @@ body {
 }
 
 .login-modal .btn-link,
-.register-modal .btn-link {
+.register-modal .btn-link,
+.reset-password-modal .btn-link,
+.verify-otp-modal .btn-link,
+.forgot-password-modal .btn-link,
+.success-modal .btn-link {
   color: #7ed6df;
   text-decoration: none;
   font-size: 14px;
@@ -409,12 +474,20 @@ body {
 }
 
 .login-modal .btn-link:hover,
-.register-modal .btn-link:hover {
+.register-modal .btn-link:hover,
+.reset-password-modal .btn-link:hover,
+.verify-otp-modal .btn-link:hover,
+.forgot-password-modal .btn-link:hover,
+.success-modal .btn-link:hover {
   color: #6ec2cb;
 }
 
 .login-modal .close-button,
-.register-modal .close-button {
+.register-modal .close-button,
+.reset-password-modal .close-button,
+.verify-otp-modal .close-button,
+.forgot-password-modal .close-button,
+.success-modal .close-button {
   position: absolute;
   right: -10px;
   top: 50%;
@@ -427,12 +500,20 @@ body {
 }
 
 .login-modal .close-button:hover,
-.register-modal .close-button:hover {
+.register-modal .close-button:hover,
+.reset-password-modal .close-button:hover,
+.verify-otp-modal .close-button:hover,
+.forgot-password-modal .close-button:hover,
+.success-modal .close-button:hover {
   color: #2d3436;
 }
 
 .login-modal .spinner-wrapper,
-.register-modal .spinner-wrapper {
+.register-modal .spinner-wrapper,
+.reset-password-modal .spinner-wrapper,
+.verify-otp-modal .spinner-wrapper,
+.forgot-password-modal .spinner-wrapper,
+.success-modal .spinner-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -451,12 +532,20 @@ body {
 }
 
 .login-modal .modal-content,
-.register-modal .modal-content {
+.register-modal .modal-content,
+.reset-password-modal .modal-content,
+.verify-otp-modal .modal-content,
+.forgot-password-modal .modal-content,
+.success-modal .modal-content {
   animation: fadeIn 0.3s ease;
 }
 
 .login-modal .show-password-button,
-.register-modal .show-password-button {
+.register-modal .show-password-button,
+.reset-password-modal .show-password-button,
+.verify-otp-modal .show-password-button,
+.forgot-password-modal .show-password-button,
+.success-modal .show-password-button {
   position: absolute;
   right: 12px;
   top: 50%;
@@ -472,12 +561,20 @@ body {
 }
 
 .login-modal .show-password-button:hover,
-.register-modal .show-password-button:hover {
+.register-modal .show-password-button:hover,
+.reset-password-modal .show-password-button:hover,
+.verify-otp-modal .show-password-button:hover,
+.forgot-password-modal .show-password-button:hover,
+.success-modal .show-password-button:hover {
   color: #2d3436;
 }
 
 .login-modal .show-password-button:focus,
-.register-modal .show-password-button:focus {
+.register-modal .show-password-button:focus,
+.reset-password-modal .show-password-button:focus,
+.verify-otp-modal .show-password-button:focus,
+.forgot-password-modal .show-password-button:focus,
+.success-modal .show-password-button:focus {
   box-shadow: none;
 }
 
@@ -666,7 +763,6 @@ body.modal-open {
   gap: 0.5rem;
   margin: 0 1rem;
 }
-
 
 .quantity-btn {
   width: 24px;
@@ -1118,3 +1214,157 @@ body.modal-open {
     font-size: 0.9rem;
   }
 } 
+
+/* Input Icon Styles */
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+  font-size: 1.1rem;
+  z-index: 10;
+}
+
+.form-control {
+  padding-left: 40px;
+}
+
+.show-password-button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #adb5bd;
+  padding: 0 10px;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #adb5bd;
+}
+
+.back-button {
+  color: #adb5bd;
+  padding: 0;
+}
+
+.error-alert {
+  background-color: #fff3f3;
+  border-color: #ffcccc;
+  color: #dc3545;
+}
+
+.spinner-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* OTP Input Styles */
+.otp-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.otp-input {
+  width: 45px !important;
+  height: 45px !important;
+  font-size: 1.2rem !important;
+  text-align: center !important;
+  padding-left: 0 !important;
+  border-radius: 8px;
+}
+
+/* Password Strength Bar */
+.password-strength-bar {
+  display: flex;
+  margin-top: 0.5rem;
+}
+
+.strength-segment {
+  height: 4px;
+  flex: 1;
+  margin-right: 2px;
+  border-radius: 2px;
+}
+
+/* Success Message Styles */
+.success-icon {
+  margin-bottom: 1.5rem;
+}
+
+/* Shared Modal Styles */
+.modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-body {
+  padding-top: 0;
+}
+
+.btn-primary {
+  background-color: #7ed6df;
+  border-color: #7ed6df;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: #6ec2cb !important;
+  border-color: #6ec2cb !important;
+}
+
+.btn-link {
+  color: #7ed6df;
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  color: #6ec2cb;
+}
+
+/* Improve OTP Input Styles */
+.otp-input {
+  border: 1px solid #ced4da;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.otp-input:focus {
+  border-color: #7ed6df;
+  box-shadow: 0 0 0 0.25rem rgba(126, 214, 223, 0.25);
+}
+
+/* Improve Alert Styles */
+.alert-success {
+  background-color: #e8f8f5;
+  border-color: #d1f2eb;
+  color: #27ae60;
+}
+
+/* Improve Form Styles */
+.form-control:focus {
+  border-color: #7ed6df;
+  box-shadow: 0 0 0 0.25rem rgba(126, 214, 223, 0.25);
+}
+
+/* Improve Success Icon */
+.success-icon svg {
+  color: #27ae60;
+}

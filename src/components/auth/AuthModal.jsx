@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
+import ForgotPasswordModal from './ForgotPasswordModal';
+import VerifyOtpModal from './VerifyOtpModal';
+import ResetPasswordModal from './ResetPasswordModal';
 
 const AuthModal = ({ show, onHide, initialMode = 'login' }) => {
   const [mode, setMode] = useState(initialMode);
+  const [email, setEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
 
   // Reset về mode mặc định khi đóng modal
   useEffect(() => {
@@ -19,23 +24,71 @@ const AuthModal = ({ show, onHide, initialMode = 'login' }) => {
 
   const switchToLogin = () => setMode('login');
   const switchToRegister = () => setMode('register');
+  const switchToForgotPassword = () => setMode('forgot-password');
+  
+  const switchToVerifyOtp = (userEmail) => {
+    setEmail(userEmail);
+    setMode('verify-otp');
+  };
+  
+  const switchToResetPassword = (userEmail, userOtpCode) => {
+    setEmail(userEmail);
+    setOtpCode(userOtpCode);
+    setMode('reset-password');
+  };
 
   return (
     <Modal 
       show={show} 
       onHide={onHide} 
       centered
-      dialogClassName={mode === 'login' ? "login-modal" : "register-modal"}
+      dialogClassName={
+        mode === 'login' ? "login-modal" : 
+        mode === 'register' ? "register-modal" : 
+        mode === 'forgot-password' ? "forgot-password-modal" : 
+        mode === 'verify-otp' ? "verify-otp-modal" : 
+        "reset-password-modal"
+      }
     >
-      {mode === 'login' ? (
+      {mode === 'login' && (
         <LoginModal 
           onHide={onHide} 
-          onSwitchToRegister={switchToRegister} 
+          onSwitchToRegister={switchToRegister}
+          onSwitchToForgotPassword={switchToForgotPassword}
         />
-      ) : (
+      )}
+      
+      {mode === 'register' && (
         <RegisterModal 
           onHide={onHide} 
           onSwitchToLogin={switchToLogin} 
+        />
+      )}
+      
+      {mode === 'forgot-password' && (
+        <ForgotPasswordModal
+          onHide={onHide}
+          onSwitchToLogin={switchToLogin}
+          onSwitchToVerifyOtp={switchToVerifyOtp}
+        />
+      )}
+      
+      {mode === 'verify-otp' && (
+        <VerifyOtpModal
+          onHide={onHide}
+          onSwitchToForgotPassword={switchToForgotPassword}
+          onSwitchToResetPassword={switchToResetPassword}
+          email={email}
+        />
+      )}
+      
+      {mode === 'reset-password' && (
+        <ResetPasswordModal
+          onHide={onHide}
+          onSwitchToVerifyOtp={switchToVerifyOtp}
+          onSwitchToLogin={switchToLogin}
+          email={email}
+          otpCode={otpCode}
         />
       )}
     </Modal>

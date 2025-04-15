@@ -87,7 +87,7 @@ const Header = () => {
                 <Dropdown align="end">
                   <Dropdown.Toggle as={CustomToggle}>
                     <BsPerson className="me-2" style={{ fontSize: '20px' }} />
-                    <span>{user?.email || 'Tài khoản'}</span>
+                    <span>{user?.name ||user?.email || 'Tài khoản'}</span>
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu style={{
@@ -100,7 +100,7 @@ const Header = () => {
                   }}>
                     <div className="px-3 py-2 mb-2">
                       <div className="text-muted" style={{ fontSize: '13px' }}>Xin chào!</div>
-                      <div className="fw-medium text-truncate" style={{ fontSize: '15px' }}>{user?.email}</div>
+                      <div className="fw-medium text-truncate" style={{ fontSize: '15px' }}>{user?.name || user?.email}</div>
                     </div>
                     
                     <Dropdown.Item 

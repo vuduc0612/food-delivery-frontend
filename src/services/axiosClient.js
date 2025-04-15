@@ -13,6 +13,8 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     const token = getAuthToken();
+    // console.log('Request Token:', token);
+    // Nếu có token thì thêm vào headers
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

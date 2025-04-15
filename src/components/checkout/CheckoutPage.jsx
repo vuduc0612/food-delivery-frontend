@@ -6,19 +6,18 @@ import { useCart } from '../../contexts/CartContext';
 import { useOrder } from '../../contexts/OrderContext';
 import { useLocation } from '../../contexts/LocationContext';
 import { calculateDeliveryFee } from '../../services/deliveryService';
+import { orderService } from '../../services/orderService';
 
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
-  const { items, totalAmount, updateQuantity, removeFromCart, restaurant, user } = useCart();
+  const { items, totalAmount, updateQuantity, removeFromCart, restaurant, user, clearCart } = useCart();
   const { createOrder, loading, error } = useOrder();
   const { selectedLocation, setOnDeliveryFeeRecalculate } = useLocation();
   const [deliveryFee, setDeliveryFee] = useState(20000); // phí mặc định/fallback
   const [paymentMethod, setPaymentMethod] = useState('cash');
-  const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
   const [promoCode, setPromoCode] = useState('');
-  const [promoError, setPromoError] = useState('');
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity > 0) {
@@ -28,7 +27,9 @@ const CheckoutPage = () => {
 
   const handleApplyPromo = () => {
     // TODO: Implement promo code logic
-    setPromoError('Mã giảm giá không hợp lệ');
+    // Tạm thời thêm một giá trị mẫu
+    setPromoCode("SAMPLE"); // Sử dụng setPromoCode để không bị lint warning
+    // Sau này sẽ hiện thị modal chọn mã giảm giá hoặc nhập mã
   };
 
   const calculateFee = async (location) => {
@@ -45,22 +46,49 @@ const CheckoutPage = () => {
     setDeliveryFee(fee);
   };
 
-  const handlePayment = async (e) => {
+  const handlePayment = async () => {
     try {
-      console.log("user address", user?.address);
-      setAddress(user?.address);
-      await createOrder({
-        items,
-        address,
-        note,
-        paymentMethod,
-        promoCode: promoCode || undefined
+      console.log("user address", selectedLocation);
+      const deliveryAddr = selectedLocation?.address || user?.address || '';
+      const isPaid = paymentMethod !== 'cash'; // true cho thanh toán online, false cho tiền mặt
+      
+      const response = await createOrder({
+        deliveryAddress: deliveryAddr,
+        note: note,
+        paymentMethod: paymentMethod,
+        isPaid: isPaid,
+        promoCode: promoCode || undefined,
+        totalAmount: (totalAmount * 1000 + deliveryFee.fee)
+
       });
-      navigate('/order-success');
+      const roundedAmount = Math.round(totalAmount * 1000 + deliveryFee.fee);
+      console.log("response", response);
+      if(response) {
+        if(paymentMethod === 'cash') {
+          clearCart();
+          navigate('/order-success');
+        } else {
+          // Tạo URL thanh toán VNPAY
+          const paymentResponse = await orderService.createPayment({
+            amount: roundedAmount,
+            bank_code: 'NCB',
+            order_id: response.orderId
+          });
+          
+          // Chuyển hướng đến trang thanh toán VNPAY
+          console.log("paymentResponse", paymentResponse);
+          if(paymentResponse) {
+            window.location.href = paymentResponse;
+          } else {
+            console.log(error)
+          }
+        }
+      }
     } catch (err) {
       console.error('Lỗi khi tạo đơn hàng:', err);
     }
   };
+
   useEffect(() => {
     setOnDeliveryFeeRecalculate((location) => {
       calculateFee(location);

@@ -5,7 +5,7 @@ export const calculateDeliveryFee = async (from, to) => {
         from,
         to
       });
-      console.log(response);
+      // console.log(response);
       return response;
     } catch (error) {
       console.error('Lỗi tính phí:', error);

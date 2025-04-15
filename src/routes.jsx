@@ -5,6 +5,8 @@ import CheckoutPage from './components/checkout/CheckoutPage';
 import OrderSuccess from './components/order/OrderSuccess';
 import Profile from './components/profile/Profile';
 import Orders from './components/order/Orders';
+import VnpayReturnPage from './components/checkout/VnPayReturnPage';
+import OrderHistory from './components/order/OrderHistory';
 
 const AppRoutes = () => {
   return (
@@ -14,7 +16,8 @@ const AppRoutes = () => {
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/order-success" element={<OrderSuccess />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/orders" element={<Orders />} />
+      <Route path="/orders" element={<OrderHistory />} />
+      <Route path="/vnpay-return" element={<VnpayReturnPage />} />
     </Routes>
   );
 };
