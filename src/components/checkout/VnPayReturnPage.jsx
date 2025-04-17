@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Card, Button, Spinner } from 'react-bootstrap';
 import { orderService } from '../../services/orderService';
+import { useCart } from '../../contexts/CartContext';
 
 const VnpayReturnPage = () => {
+  const {clearCart} = useCart();
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -21,6 +23,7 @@ const VnpayReturnPage = () => {
         const response = await orderService.callbackPayment(paymentData);
         console.log("response", response);
         if(response.success) {
+          clearCart();
           setPaymentStatus({
             success: true,
             message: response.message

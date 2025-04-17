@@ -3,8 +3,9 @@ import axiosClient from './axiosClient';
 export const orderService = {
   createOrder: async (orderData) => {
     try {
+      console.log("Order data", orderData);
       const response = await axiosClient.post('/orders', orderData);
-      console.log("API place order", response);
+      // console.log("API place order", response);
       return response;
     } catch (error) {
       throw new Error(error.response?.message || 'Có lỗi xảy ra khi tạo đơn hàng');
@@ -13,12 +14,14 @@ export const orderService = {
 
   createPayment: async (orderData) => {
     try {
+      console.log("Payement data", orderData);
       const response = await axiosClient.post('/payments/vnpay', orderData);
       return response;
     } catch (error) {
       throw new Error(error.response?.message || 'Có lỗi xảy ra khi tạo URL thanh toán');
     }
   },
+
 
   callbackPayment: async (paymentData) => {
     try {
@@ -29,18 +32,21 @@ export const orderService = {
     }
   },
 
-  getOrderById: async (orderId) => {
+  getOrderById: async (id) => {
     try {
-      const response = await axiosClient.get(`/orders/${orderId}`);
+      const response = await axiosClient.get(`/orders/${id}`);
+      // console.log('Chi tiết đơn hàng:', response);
       return response;
     } catch (error) {
-      throw new Error(error.response?.message || 'Có lỗi xảy ra khi lấy thông tin đơn hàng');
+      console.error('Lỗi khi lấy chi tiết đơn hàng:', error);
+      throw new Error('Không thể lấy thông tin đơn hàng. Vui lòng thử lại sau.');
     }
   },
 
-  getOrdersByUser: async () => {
+  getOrdersByUserCurrent: async () => {
     try {
-      const response = await axiosClient.get('/orders/user');
+      const response = await axiosClient.get(`/orders/users/me`);
+      // console.log(response);
       return response;
     } catch (error) {
       throw new Error(error.response?.message || 'Có lỗi xảy ra khi lấy danh sách đơn hàng');

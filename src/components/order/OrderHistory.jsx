@@ -1,184 +1,258 @@
-import { useState } from "react"
-import { Search, ChevronRight } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Container, Form, Button, Row, Col, Spinner } from 'react-bootstrap';
+import { BsChevronRight } from 'react-icons/bs';
+import { FaClock, FaTruck, FaCheckCircle } from "react-icons/fa";
+import { orderService } from "../../services/orderService";
+import { useNavigate } from 'react-router-dom';
 
-const OrderHistory = () =>{
-  const [activeTab, setActiveTab] = useState("chưa giao")
+const OrderHistory = () => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("da-giao");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample order data
-  const orders = [
-    {
-      id: 1,
-      date: "05/04/2025",
-      time: "21:25",
-      restaurant: "Ốc Ngon Hà Nội & Chân Gà Rang Muối - Lê Lai",
-      quantity: "5 phần",
-      price: "283.000đ",
-      orderCode: "45092282",
-      status: "GIAO THÀNH CÔNG",
-      image: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      id: 2,
-      date: "01/04/2025",
-      time: "12:18",
-      restaurant: "Cơm Thố Anh Nguyễn - Phùng Hưng",
-      quantity: "1 phần",
-      price: "58.500đ",
-      orderCode: "45293865",
-      status: "GIAO THÀNH CÔNG",
-      image: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      id: 3,
-      date: "03/03/2025",
-      time: "12:17",
-      restaurant: "Bento Delichi - Cơm Gà Xối Mỡ & Cơm Gà Mắm Tỏi - Phùng Hưng",
-      quantity: "1 phần",
-      price: "47.500đ",
-      orderCode: "43263735",
-      status: "GIAO THÀNH CÔNG",
-      image: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      id: 4,
-      date: "17/02/2025",
-      time: "21:22",
-      restaurant: "Cơm Thố Anh Nguyễn - Phùng Hưng",
-      quantity: "1 phần",
-      price: "77.000đ",
-      orderCode: "42271771",
-      status: "ĐÃ HỦY",
-      image: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      id: 5,
-      date: "17/02/2025",
-      time: "21:18",
-      restaurant: "Cơm Thố Anh Nguyễn - Phùng Hưng",
-      quantity: "1 phần",
-      price: "85.000đ",
-      orderCode: "42271496",
-      status: "ĐÃ HỦY",
-      image: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      id: 6,
-      date: "15/01/2025",
-      time: "12:26",
-      restaurant: "Cơm Thố Anh Nguyễn - Phùng Hưng",
-      quantity: "1 phần",
-      price: "68.000đ",
-      orderCode: "39991581",
-      status: "GIAO THÀNH CÔNG",
-      image: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      id: 7,
-      date: "13/01/2025",
-      time: "21:54",
-      restaurant: "Sinry Chicken - Gà Rán & Cơm Trộn Hàn Quốc - Triều khúc",
-      quantity: "1 phần",
-      price: "58.000đ",
-      orderCode: "39882706",
-      status: "ĐÃ HỦY",
-      image: "/placeholder.svg?height=40&width=40",
-    },
-  ]
+  // Lấy dữ liệu đơn hàng khi component được mount
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await orderService.getOrdersByUserCurrent();
+        setOrders(response);
+      } catch (err) {
+        setError(err.message || 'Không thể tải danh sách đơn hàng');
+        console.error('Error fetching orders:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  // URL ảnh mặc định cho món ăn
+  const defaultImageUrl = "https://c8.alamy.com/comp/2YCF22X/pizza-cartoon-vector-icon-fast-food-concept-isolated-in-flat-design-2YCF22X.jpg";
+
+  // Lọc đơn hàng theo tab và tìm kiếm
+  const filteredOrders = orders.filter(order => {
+    // Lọc theo tab
+    if (activeTab === "chua-giao") {
+      return order.status === "PENDING";
+    } else if (activeTab === "dang-giao") {
+      return order.status === "OUT_FOR_DELIVERY";
+    } else if (activeTab === "da-giao") {
+      return order.status === "DELIVERED";
+    }
+
+    // Nếu có từ khóa tìm kiếm
+    if (searchTerm) {
+      return order.restaurant?.toLowerCase().includes(searchTerm.toLowerCase());
+    }
+
+    return true;
+  });
+
+  // Format date from ISO string to DD/MM/YYYY
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+  };
+
+  // Format time from ISO string to HH:MM
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // Format price to VND
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
+  };
+
+  // Xử lý chuyển hướng đến trang chi tiết đơn hàng
+  const handleOrderClick = (orderId) => {
+    navigate(`/orders/${orderId}`);
+  };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white min-h-screen">
-      <div className="p-4">
-        {/* Tabs and Search */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex bg-gray-100 rounded-full p-1">
-            <button
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeTab === "chưa giao" ? "bg-white text-gray-800 shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => setActiveTab("chưa giao")}
-            >
-              Chưa giao
-              {activeTab === "chưa giao" && (
-                <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
-              )}
-            </button>
-            <button
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeTab === "đã giao" ? "bg-gray-800 text-white" : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => setActiveTab("đã giao")}
-            >
-              Đã giao
-            </button>
-          </div>
+    <div className="bg-white">
+      <Container className="py-4">
+        {/* Tabs và Search */}
+        <Row className="align-items-center mb-5">
+          <Col md={8} className="mb-3 mb-md-0">
+            <div className="d-flex gap-2 flex-wrap">
+              <Button
+                variant={activeTab === "da-giao" ? "success" : "outline-secondary"}
+                className="d-flex align-items-center rounded-pill px-1 py-1 small"
+                onClick={() => setActiveTab("da-giao")}
+              >
+                <FaCheckCircle className="me-1" style={{ fontSize: "12px" }} />
+                <span style={{ fontSize: "12px" }}>ĐÃ GIAO</span>
+              </Button>
+              <Button
+                variant={activeTab === "dang-giao" ? "primary" : "outline-secondary"}
+                className="d-flex align-items-center rounded-pill px-2 py-1 small"
+                onClick={() => setActiveTab("dang-giao")}
+              >
+                <FaTruck className="me-1" style={{ fontSize: "12px" }} />
+                <span style={{ fontSize: "12px" }}>ĐANG GIAO</span>
+              </Button>
+              <Button
+                variant={activeTab === "chua-giao" ? "primary" : "outline-secondary"}
+                className="d-flex align-items-center rounded-pill px-2 py-1 small"
+                onClick={() => setActiveTab("chua-giao")}
+              >
+                <FaClock className="me-1" style={{ fontSize: "12px" }} />
+                <span style={{ fontSize: "12px" }}>CHƯA GIAO</span>
+              </Button>
+              
+            </div>
+          </Col>
 
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Tìm món ăn hoặc nhà hàng"
-              className="pl-9 pr-4 py-2 border border-gray-200 rounded-full text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          </div>
-        </div>
+          <Col md={4}>
+            <div className="position-relative">
+              <Form.Control
+                type="text"
+                placeholder="Tìm món ăn hoặc nhà hàng"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ borderRadius: 10, paddingRight: "45px", border: "1px solid #ddd", height: "34px", fontSize: "16px" }}
+                className="shadow-sm w-100"
+              />
+              <span
+                className="position-absolute"
+                style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#888"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </span>
+            </div>
+          </Col>
+        </Row>
 
-        {/* Order List */}
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <div
-              key={order.id}
-              className="border border-gray-100 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-start">
-                <div className="flex-shrink-0 mr-4">
-                  <img
-                    src={order.image || "/placeholder.svg"}
-                    alt={order.restaurant}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                </div>
-
-                <div className="flex-grow">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="text-gray-500 text-sm">
-                        {order.date} | {order.time}
+        {/* Danh sách đơn hàng */}
+        <div>
+          {loading ? (
+            <div className="text-center py-5">
+              <Spinner animation="border" variant="primary" />
+              <p className="mt-2 text-muted">Đang tải đơn hàng...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-5">
+              <p className="text-danger">{error}</p>
+              <Button 
+                variant="outline-primary" 
+                size="sm"
+                onClick={() => window.location.reload()}
+              >
+                Thử lại
+              </Button>
+            </div>
+          ) : filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
+              <div 
+                key={order.id} 
+                className="mb-3 bg-white shadow-sm hover-effect" 
+                style={{ borderRadius: '4px', overflow: 'hidden', cursor: 'pointer' }}
+                onClick={() => handleOrderClick(order.orderId)}
+              >
+                <div className="p-3">
+                  <Row>
+                    {/* Cột trái - Logo & Thông tin */}
+                    <Col xs={3} md={2} className="mb-3 mb-md-0">
+                      <div className="d-flex align">
+                        <div style={{ width: '55px' }}>
+                          <img
+                            src={order.imageUrl || defaultImageUrl}
+                            alt="Food icon"
+                            style={{ width: '45px', height: '45px', objectFit: 'contain' }}
+                          />
+                        </div>
+                        <div>
+                          <div className="text-muted small">
+                            {order.createdAt ? formatDate(order.createdAt) : '--/--/----'} | {order.createdAt ? formatTime(order.createdAt) : '--:--'}
+                          </div>
+                          <div className="text-muted small" style={{ fontSize: '11px' }}>
+                            Mã đơn: {order.orderCode || order.orderId}
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="font-medium text-gray-900 mt-1">{order.restaurant}</h3>
-                      <div className="text-sm text-gray-500 mt-1">
-                        {order.quantity} • {order.price}
+                    </Col>
+
+                    {/* Cột giữa - Thông tin nhà hàng */}
+                    <Col xs={6} md={8}>
+                      <div className="mb-2">
+                        <div className="fw-medium">
+                          {order.restaurantName || "Nhà hàng chưa xác định"}
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">Mã đơn hàng: {order.orderCode}</div>
-                    </div>
+                      <div className="text-muted small">
+                        {order.orderDetailResponses?.length || 0} phần • {formatPrice(order.totalAmount || 0)}
+                      </div>
+                    </Col>
 
-                    <div className="flex flex-col items-end space-y-2">
-                      <button className="border border-blue-500 text-blue-500 px-4 py-1.5 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors">
-                        Đặt lại
-                      </button>
-
-                      <div className="flex items-center">
+                    {/* Cột phải - Trạng thái */}
+                    <Col xs={3} md={2} className="text-end d-flex flex-column justify-content-between">
+                      <div className="d-flex align-items-center justify-content-end">
                         <span
-                          className={`text-xs font-medium px-2 py-1 rounded ${
-                            order.status === "GIAO THÀNH CÔNG"
-                              ? "bg-green-100 text-green-700"
-                              : order.status === "ĐÃ HỦY"
-                                ? "bg-gray-100 text-gray-500"
-                                : "bg-yellow-100 text-yellow-700"
-                          }`}
+                          className="small py-1 px-2"
+                          style={{
+                            borderRadius: '4px',
+                            fontSize: '12px',
+                            backgroundColor:
+                              order.status === "DELIVERED"
+                                ? "#e3fcec"
+                                : order.status === "OUT_FOR_DELIVERY"
+                                ? "#fff8e1"
+                                : order.status === "PENDING"
+                                ? "#fceef3"
+                                : "#f5f5f5",
+                            color:
+                              order.status === "DELIVERED"
+                                ? "#27ae60"
+                                : order.status === "OUT_FOR_DELIVERY"
+                                ? "#e67e22"
+                                : order.status === "PENDING"
+                                ? "#e84393"
+                                : "#999999"
+                          }}
                         >
-                          {order.status}
+                          {order.status === "DELIVERED" 
+                            ? "GIAO THÀNH CÔNG" 
+                            : order.status === "OUT_FOR_DELIVERY" 
+                            ? "ĐANG GIAO" 
+                            : order.status === "PENDING"
+                            ? "CHƯA GIAO"
+                            : order.status || "KHÔNG XÁC ĐỊNH"}
                         </span>
-                        <ChevronRight className="h-5 w-5 text-gray-300 ml-1" />
+                        <BsChevronRight className="ms-2 text-muted" style={{ fontSize: '10px' }} />
                       </div>
-                    </div>
-                  </div>
+                    </Col>
+                  </Row>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="text-center py-5">
+              <p className="text-muted">Không tìm thấy đơn hàng nào</p>
             </div>
-          ))}
+          )}
         </div>
-      </div>
+      </Container>
     </div>
-  )
-}
+  );
+};
+
 export default OrderHistory;

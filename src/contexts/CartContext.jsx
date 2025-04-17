@@ -50,12 +50,13 @@ export const CartProvider = ({ children }) => {
       const cartData = await getCart1(token);
 
       if (cartData && Array.isArray(cartData.items)) {
+        // console.log("cartData", cartData);
         setItems(cartData.items);
         setTotalAmount(cartData.totalAmount || 0);
         setRestaurant(cartData.restaurant || null);
         setUser(cartData.user || null);
       } else {
-        console.warn("Invalid cart data format:", cartData);
+        // console.warn("Invalid cart data format:", cartData);
         setItems([]);
         setTotalAmount(0);
         setRestaurant(null);

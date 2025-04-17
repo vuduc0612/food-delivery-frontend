@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { BsArrowLeft, BsPlus, BsGeoAlt, BsTrash, BsPencil } from 'react-icons/bs';
@@ -26,42 +26,39 @@ const CheckoutPage = () => {
   };
 
   const handleApplyPromo = () => {
-    // TODO: Implement promo code logic
-    // Tạm thời thêm một giá trị mẫu
-    setPromoCode("SAMPLE"); // Sử dụng setPromoCode để không bị lint warning
-    // Sau này sẽ hiện thị modal chọn mã giảm giá hoặc nhập mã
+    setPromoCode("SAMPLE"); 
   };
 
-  const calculateFee = async (location) => {
+  const calculateFee = useCallback(async (location) => {
     if (!restaurant || !location?.coordinates) return;
-  
-    const from = {
-      lat: 20.995649,
-      lng: 105.808653
-    }; // đảm bảo object restaurant có field này!
+    // console.log("restaurant", restaurant.longitude, restaurant.latitude);
+    const from = restaurant.longitude && restaurant.latitude 
+      ? { lat: restaurant.latitude, lng: restaurant.longitude }
+      : { lat: 20.995649, lng: 105.808653 };
     const to = location.coordinates;
-    console.log(from, to);
+    // console.log(from, to);
   
     const fee = await calculateDeliveryFee(from, to);
     setDeliveryFee(fee);
-  };
+  }, [restaurant]);
 
   const handlePayment = async () => {
     try {
-      console.log("user address", selectedLocation);
+      // console.log("user address", selectedLocation);
       const deliveryAddr = selectedLocation?.address || user?.address || '';
-      const isPaid = paymentMethod !== 'cash'; // true cho thanh toán online, false cho tiền mặt
       
       const response = await createOrder({
         deliveryAddress: deliveryAddr,
         note: note,
         paymentMethod: paymentMethod,
-        isPaid: isPaid,
+        isPaid: false,
         promoCode: promoCode || undefined,
-        totalAmount: (totalAmount * 1000 + deliveryFee.fee)
+        totalAmount: totalAmount*1000,
+        feeShipping: Math.round(deliveryFee.fee),
+        discount: 0,
 
       });
-      const roundedAmount = Math.round(totalAmount * 1000 + deliveryFee.fee);
+      
       console.log("response", response);
       if(response) {
         if(paymentMethod === 'cash') {
@@ -70,13 +67,13 @@ const CheckoutPage = () => {
         } else {
           // Tạo URL thanh toán VNPAY
           const paymentResponse = await orderService.createPayment({
-            amount: roundedAmount,
+            amount: totalAmount*1000 + Math.round(deliveryFee.fee),
             bank_code: 'NCB',
             order_id: response.orderId
           });
           
           // Chuyển hướng đến trang thanh toán VNPAY
-          console.log("paymentResponse", paymentResponse);
+          // console.log("paymentResponse", paymentResponse);
           if(paymentResponse) {
             window.location.href = paymentResponse;
           } else {
@@ -99,7 +96,7 @@ const CheckoutPage = () => {
     if (selectedLocation?.coordinates) {
       calculateFee(selectedLocation);
     }
-  }, [selectedLocation, restaurant]);
+  }, [selectedLocation, restaurant, calculateFee]);
 
   if (items.length === 0) {
     return (
