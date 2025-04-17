@@ -47,7 +47,10 @@ const AuthModal = ({ show, onHide, initialMode = 'login' }) => {
         mode === 'register' ? "register-modal" : 
         mode === 'forgot-password' ? "forgot-password-modal" : 
         mode === 'verify-otp' ? "verify-otp-modal" : 
-        "reset-password-modal"
+        mode === 'reset-password' ? "reset-password-modal" : 
+        mode === 'success' ? "success-modal" : 
+        
+        ""
       }
     >
       {mode === 'login' && (

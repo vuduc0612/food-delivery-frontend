@@ -111,6 +111,14 @@ const LoginModal = ({ onHide, onSwitchToRegister, onSwitchToForgotPassword }) =>
                 </div>
               )}
             </Button>
+            
+            <a 
+              href="/merchan-login" 
+              className="d-block text-center mt-2 merchant-login-link"
+              style={{ textDecoration: 'none', color: '#6ec2cb', fontWeight: 500 }}
+            >
+              Đăng nhập với tư cách nhà hàng
+            </a>
 
             <div className="divider">
               <hr />

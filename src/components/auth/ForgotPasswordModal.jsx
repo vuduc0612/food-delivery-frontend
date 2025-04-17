@@ -71,7 +71,7 @@ const ForgotPasswordModal = ({ onHide, onSwitchToLogin, onSwitchToVerifyOtp }) =
         )}
 
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-4 position-relative">
+          <Form.Group className="mb-3 position-relative">
             <BsEnvelope className="input-icon" />
             <Form.Control
               type="email"
@@ -79,7 +79,7 @@ const ForgotPasswordModal = ({ onHide, onSwitchToLogin, onSwitchToVerifyOtp }) =
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={loading || success}
+              
             />
           </Form.Group>
 
@@ -107,6 +107,7 @@ const ForgotPasswordModal = ({ onHide, onSwitchToLogin, onSwitchToVerifyOtp }) =
                 variant="link"
                 onClick={onSwitchToLogin}
                 disabled={loading}
+                className="text-decoration-none"
               >
                 Quay lại đăng nhập
               </Button>
