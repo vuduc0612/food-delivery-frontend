@@ -47,27 +47,27 @@ const OrdersFilter = ({ searchTerm, statusFilter, onSearch, onFilterStatus }) =>
             <Dropdown.Item onClick={() => onFilterStatus('all')}>Tất cả</Dropdown.Item>
             <Dropdown.Item onClick={() => onFilterStatus('pending')} className="d-flex align-items-center">
               <span className="me-2">Chờ xác nhận</span>
-              <Badge bg="warning" className="text-dark ms-auto">Chờ xác nhận</Badge>
+              {/* <Badge bg="warning" className="text-dark ms-auto">Chờ xác nhận</Badge> */}
             </Dropdown.Item>
             <Dropdown.Item onClick={() => onFilterStatus('confirmed')} className="d-flex align-items-center">
               <span className="me-2">Đã xác nhận</span>
-              <Badge bg="info" className="ms-auto">Đã xác nhận</Badge>
+              {/* <Badge bg="info" className="ms-auto">Đã xác nhận</Badge> */}
             </Dropdown.Item>
             <Dropdown.Item onClick={() => onFilterStatus('preparing')} className="d-flex align-items-center">
               <span className="me-2">Đang chuẩn bị</span>
-              <Badge bg="primary" className="ms-auto">Đang chuẩn bị</Badge>
+              {/* <Badge bg="primary" className="ms-auto">Đang chuẩn bị</Badge> */}
             </Dropdown.Item>
             <Dropdown.Item onClick={() => onFilterStatus('out_for_delivery')} className="d-flex align-items-center">
               <span className="me-2">Đang giao</span>
-              <Badge bg="info" style={{ backgroundColor: '#17a2b8' }} className="ms-auto">Đang giao</Badge>
+              {/* <Badge bg="info" style={{ backgroundColor: '#17a2b8' }} className="ms-auto">Đang giao</Badge> */}
             </Dropdown.Item>
             <Dropdown.Item onClick={() => onFilterStatus('delivered')} className="d-flex align-items-center">
               <span className="me-2">Đã giao</span>
-              <Badge bg="success" className="ms-auto">Đã giao</Badge>
+              {/* <Badge bg="success" className="ms-auto">Đã giao</Badge> */}
             </Dropdown.Item>
             <Dropdown.Item onClick={() => onFilterStatus('cancelled')} className="d-flex align-items-center">
               <span className="me-2">Đã hủy</span>
-              <Badge bg="danger" className="ms-auto">Đã hủy</Badge>
+              {/* <Badge bg="danger" className="ms-auto">Đã hủy</Badge> */}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

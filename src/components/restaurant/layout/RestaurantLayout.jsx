@@ -27,7 +27,8 @@ const RestaurantLayout = ({ children }) => {
 
   // Kiểm tra đường dẫn hiện tại để highlight menu item tương ứng
   const isActive = (path) => {
-    return location.pathname === path;
+    const currentPath = location.pathname;
+    return currentPath === path;
   };
 
   return (
@@ -105,12 +106,14 @@ const RestaurantLayout = ({ children }) => {
         {/* Header */}
         <div className="bg-white shadow-sm p-3 d-flex justify-content-between align-items-center">
           <h4 className="mb-0">
-            {isActive('/merchan/dashboard') && 'Bảng điều khiển'}
+            {isActive('/merchan/dashboard') && 'Tổng quan'}
             {isActive('/merchan/orders') && 'Quản lý đơn hàng'}
             {isActive('/merchan/menu') && 'Quản lý thực đơn'}
             {isActive('/merchan/analytics') && 'Thống kê doanh thu'}
             {isActive('/merchan/customers') && 'Quản lý khách hàng'}
             {isActive('/merchan/settings') && 'Cài đặt nhà hàng'}
+            {isActive('/merchan/profile') && 'Thông tin nhà hàng'}
+            {isActive('/merchan/orders/:orderId') && 'Chi tiết đơn hàng'}
           </h4>
           <div>
             <Dropdown align="end">

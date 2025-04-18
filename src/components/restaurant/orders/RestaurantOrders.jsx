@@ -83,9 +83,6 @@ const RestaurantOrders = () => {
 
   return (
     <Card className="shadow-sm">
-      <Card.Header className="bg-white">
-        <h5 className="mb-0">Quản lý đơn hàng</h5>
-      </Card.Header>
       <Card.Body>
         {/* Bộ lọc và tìm kiếm */}
         <OrdersFilter 

@@ -22,11 +22,11 @@ const OrderActionsDropdown = ({ order, onUpdateStatus, isLastRow }) => {
         {/* PENDING */}
         {order.status.toLowerCase() === 'pending' && (
           <React.Fragment>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'confirmed')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'confirmed')} className="d-flex align-items-center">
               <CheckCircle size={16} className="me-2 text-success" />
               <span>Xác nhận đơn</span>
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'cancelled')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'cancelled')} className="d-flex align-items-center">
               <XCircle size={16} className="me-2 text-danger" />
               <span>Hủy đơn</span>
             </Dropdown.Item>
@@ -36,11 +36,11 @@ const OrderActionsDropdown = ({ order, onUpdateStatus, isLastRow }) => {
         {/* CONFIRMED */}
         {order.status.toLowerCase() === 'confirmed' && (
           <React.Fragment>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'preparing')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'preparing')} className="d-flex align-items-center">
               <Clock size={16} className="me-2 text-primary" />
               <span>Bắt đầu chuẩn bị</span>
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'cancelled')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'cancelled')} className="d-flex align-items-center">
               <XCircle size={16} className="me-2 text-danger" />
               <span>Hủy đơn</span>
             </Dropdown.Item>
@@ -50,11 +50,11 @@ const OrderActionsDropdown = ({ order, onUpdateStatus, isLastRow }) => {
         {/* PREPARING */}
         {order.status.toLowerCase() === 'preparing' && (
           <React.Fragment>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'out_for_delivery')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'out_for_delivery')} className="d-flex align-items-center">
               <Truck size={16} className="me-2 text-info" />
               <span>Bắt đầu giao hàng</span>
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'cancelled')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'cancelled')} className="d-flex align-items-center">
               <XCircle size={16} className="me-2 text-danger" />
               <span>Hủy đơn</span>
             </Dropdown.Item>
@@ -64,11 +64,11 @@ const OrderActionsDropdown = ({ order, onUpdateStatus, isLastRow }) => {
         {/* OUT_FOR_DELIVERY */}
         {order.status.toLowerCase() === 'out_for_delivery' && (
           <React.Fragment>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'delivered')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'delivered')} className="d-flex align-items-center">
               <CheckCircle size={16} className="me-2 text-success" />
               <span>Xác nhận đã giao</span>
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => onUpdateStatus(order.orderId, 'cancelled')} className="d-flex align-items-center">
+            <Dropdown.Item onClick={() => onUpdateStatus(order.id, 'cancelled')} className="d-flex align-items-center">
               <XCircle size={16} className="me-2 text-danger" />
               <span>Hủy đơn</span>
             </Dropdown.Item>

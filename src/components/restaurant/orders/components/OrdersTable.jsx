@@ -24,21 +24,21 @@ const OrdersTable = ({ orders, onUpdateStatus, formatDate, formatCurrency }) => 
           {orders.map((order, idx) => {
             const isLastRow = idx === orders.length - 1;
             return (
-              <tr key={order.id || order.orderId}>
-                <td className="fw-medium">{order.orderId}</td>
+              <tr key={order.id}>
+                <td className="fw-medium">{order.id}</td>
                 <td>
                   <div>{order.customerName}</div>
                   <div className="small text-muted">{order.user?.phone || order.user?.email}</div>
                 </td>
-                <td>{formatDate(order.createdAt)}</td>
-                <td className="fw-medium">{formatCurrency(order.totalAmount)}</td>
+                <td>{formatDate(order.order_time)}</td>
+                <td className="fw-medium">{formatCurrency(order.total_price)}</td>
                 <td><OrderStatusBadge status={order.status} /></td>
                 <td>
                   <Badge 
-                    bg={order.paymentMethod === 'COD' ? 'light' : 'success'} 
-                    className={order.paymentMethod === 'COD' ? 'text-dark border' : 'text-white'}
+                    bg={order.paid === false ? 'light' : 'success'} 
+                    className={order.paid === false ? 'text-dark border' : 'text-white'}
                   >
-                    {order.paymentMethod === 'COD' ? 'Tiền mặt' : 'Đã thanh toán'}
+                    {order.paid === false ? 'Chưa thanh toán' : 'Đã thanh toán'}
                   </Badge>
                 </td>
                 <td>
@@ -48,7 +48,7 @@ const OrdersTable = ({ orders, onUpdateStatus, formatDate, formatCurrency }) => 
                       size="sm"
                       className="me-2"
                       as={Link}
-                      to={`/merchan/orders/${order.orderId}`}
+                      to={`/merchan/orders/${order.id}`}
                     >
                       <Eye size={14} className="me-1" />
                       Chi tiết
