@@ -1,20 +1,24 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
 
-import { CartProvider, useCart } from './contexts/CartContext';
-import { OrderProvider } from './contexts/OrderContext';
-import { LocationProvider } from './contexts/LocationContext';
-import Header from './components/layout/Header';
-import Cart from './components/cart/Cart';
+
+import { CartProvider, useCart } from './customer/contexts/CartContext';
+import { OrderProvider } from './customer/contexts/OrderContext';
+import { LocationProvider } from './customer/contexts/LocationContext';
+import Header from './customer/components/layout/Header';
+import Cart from './customer/components/cart/Cart';
 import AppRoutes from './routes';
-import RestaurantLogin from './components/restaurant/RestaurantLogin';
-import RestaurantDashboard from './components/restaurant/dashboard/RestaurantDashboard';
-import RestaurantOrders from './components/restaurant/orders/RestaurantOrders';
-import RestaurantOrderDetail from './components/restaurant/orders/RestaurantOrderDetail';
-import RestaurantLayout from './components/restaurant/layout/RestaurantLayout';
+
+import RestaurantDashboard from './restaurant/components/dashboard/RestaurantDashboard';
+import RestaurantOrders from './restaurant/components/orders/RestaurantOrders';
+import RestaurantOrderDetail from './restaurant/components/orders/RestaurantOrderDetail';
+import RestaurantLayout from './restaurant/components/layout/RestaurantLayout';
+import RestaurantDishes from './restaurant/components/dishes/RestaurantDishes';
+import DishForm from './restaurant/components/dishes/DishForm';
 import './index.css';
-import { RestaurantAuthProvider } from './contexts/RestaurantAuthContext';
+import { RestaurantAuthProvider } from './restaurant/contexts/RestaurantAuthContext';
+import { AuthProvider } from './customer/contexts/AuthContext';
+import RestaurantLogin from './restaurant/auth/RestaurantLogin';
 
 // Layout cho các trang khách hàng (có header và cart)
 const CustomerLayout = () => {
@@ -35,24 +39,40 @@ const CustomerLayout = () => {
 const RestaurantRoutes = () => {
   return (
     <Routes>
-      <Route path="/merchan-login" element={<RestaurantLogin />} />
-      <Route path="/merchan" element={<Navigate to="/merchan/dashboard" replace />} />
-      <Route path="/merchan/dashboard" element={
+      <Route path="/merchant-login" element={<RestaurantLogin />} />
+      <Route path="/merchant" element={<Navigate to="/merchant/dashboard" replace />} />
+      <Route path="/merchant/dashboard" element={
         <RestaurantLayout>
           <RestaurantDashboard />
         </RestaurantLayout>
       } />
-      <Route path="/merchan/orders" element={
+      <Route path="/merchant/orders" element={
         <RestaurantLayout>
           <RestaurantOrders />
         </RestaurantLayout>
       } />
-      <Route path="/merchan/orders/:orderId" element={
+      <Route path="/merchant/orders/:orderId" element={
         <RestaurantLayout>
           <RestaurantOrderDetail />
         </RestaurantLayout>
       } />
-      <Route path="/merchan/*" element={
+      {/* Routes cho quản lý món ăn */}
+      <Route path="/merchant/dishes" element={
+        <RestaurantLayout>
+          <RestaurantDishes />
+        </RestaurantLayout>
+      } />
+      <Route path="/merchant/dishes/add" element={
+        <RestaurantLayout>
+          <DishForm />
+        </RestaurantLayout>
+      } />
+      <Route path="/merchant/dishes/edit/:dishId" element={
+        <RestaurantLayout>
+          <DishForm />
+        </RestaurantLayout>
+      } />
+      <Route path="/merchant/*" element={
         <RestaurantLayout>
           <RestaurantDashboard />
         </RestaurantLayout>
@@ -66,7 +86,7 @@ const AppContent = () => {
   const location = useLocation();
   
   // Kiểm tra xem đường dẫn hiện tại có phải là trang nhà hàng không
-  const isRestaurantPage = location.pathname === '/merchan-login' || location.pathname.startsWith('/merchan/');
+  const isRestaurantPage = location.pathname === '/merchant-login' || location.pathname.startsWith('/merchant/');
   
   return isRestaurantPage ? <RestaurantRoutes /> : <CustomerLayout />;
 };
@@ -89,4 +109,4 @@ const App = () => {
   );
 };
 
-export default App; 
+export default App;
