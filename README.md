@@ -1,7 +1,7 @@
 # Food Delivery App - Frontend
 
 A modern, user-friendly web application for food delivery services. This platform enables customers to browse restaurants, order food online, track deliveries in real-time, and allows restaurant owners to manage their menus and orders efficiently.
-om/800x400?text=Food+Delivery+App+Screenshot
+
 ![Food Delivery App Screenshot](https://res.cloudinary.com/dyzx3woh4/image/upload/v1745229186/login_rrlf1u.png)
 
 ## Features
