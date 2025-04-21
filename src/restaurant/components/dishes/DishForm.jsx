@@ -278,7 +278,7 @@ const DishForm = () => {
                 <Form.Control
                   type="number"
                   name="price"
-                  value={formData.price}
+                  value={formData.price*1000}
                   onChange={handleChange}
                   placeholder="Nhập giá món ăn"
                   required
