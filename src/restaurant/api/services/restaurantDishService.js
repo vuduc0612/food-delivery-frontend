@@ -59,6 +59,7 @@ export const restaurantDishService = {
       formData.append('price', dishData.price);
       formData.append('description', dishData.description || '');
       formData.append('categoryName', dishData.categoryName);
+      formData.append('thumbnail', '');
       
       // Thêm ảnh nếu có
       if (dishData.file && dishData.file instanceof File) {

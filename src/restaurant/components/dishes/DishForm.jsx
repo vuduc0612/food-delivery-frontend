@@ -31,6 +31,8 @@ const DishForm = () => {
   const [success, setSuccess] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
+  const [useCustomCategory, setUseCustomCategory] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
 
   // Kiểm tra đăng nhập
   useEffect(() => {
@@ -69,14 +71,25 @@ const DishForm = () => {
           console.log("Dish data from API:", dish); // Log toàn bộ dữ liệu từ API
           
           if (dish) {
+            const category = dish.category || '';
+            // Kiểm tra nếu category có trong danh sách hay không
+            const categoryExists = categories.some(cat => cat.name === category);
+            
             setFormData({
               name: dish.name || '',
               price: dish.price || '',
               description: dish.description || '',
-              categoryName: dish.category || '',
+              categoryName: categoryExists ? category : '',
               thumbnail: dish.thumbnail || '', // Lưu URL ảnh hiện tại
               file: null // Không có file mới
             });
+            
+            // Nếu category không có trong danh sách, coi như category tùy chỉnh
+            if (!categoryExists && category) {
+              setUseCustomCategory(true);
+              setCustomCategory(category);
+            }
+            
             setImagePreview(dish.thumbnail || '');
           }
           
@@ -89,7 +102,7 @@ const DishForm = () => {
     };
 
     loadDish();
-  }, [dishId, isEditMode]);
+  }, [dishId, isEditMode, fetchDishById]);
 
   // Xử lý thay đổi input
   const handleChange = (e) => {
@@ -97,6 +110,35 @@ const DishForm = () => {
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  // Xử lý thay đổi danh mục
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    
+    if (value === 'custom') {
+      setUseCustomCategory(true);
+      setFormData(prev => ({
+        ...prev,
+        categoryName: customCategory
+      }));
+    } else {
+      setUseCustomCategory(false);
+      setFormData(prev => ({
+        ...prev,
+        categoryName: value
+      }));
+    }
+  };
+
+  // Xử lý nhập danh mục tùy chỉnh
+  const handleCustomCategoryChange = (e) => {
+    const value = e.target.value;
+    setCustomCategory(value);
+    setFormData(prev => ({
+      ...prev,
+      categoryName: value
     }));
   };
 
@@ -129,7 +171,7 @@ const DishForm = () => {
     }
 
     // Kiểm tra ảnh
-    if (!isEditMode && !formData.thumbnail) {
+    if (!isEditMode && !formData.file) {
       setError('Vui lòng chọn ảnh cho món ăn');
       return;
     }
@@ -154,12 +196,11 @@ const DishForm = () => {
 
       console.log("API Response:", result);
       
-      if (result && result.status === "OK") {
+      if (result && (result.status === "CREATED" || result.status === "OK")) {
         setSuccess(true);
-        // Chuyển hướng sau 2 giây
         setTimeout(() => {
           navigate('/merchant/dishes');
-        }, 2000);
+        }, 5000);
       } else {
         setError(result?.message || 'Có lỗi xảy ra khi lưu món ăn');
       }
@@ -247,28 +288,32 @@ const DishForm = () => {
               <Form.Group className="mb-3">
                 <Form.Label>Danh mục <span className="text-danger">*</span></Form.Label>
                 <Form.Select
-                  name="category"
-                  value={formData.categoryName}
-                  onChange={handleChange}
+                  value={useCustomCategory ? 'custom' : formData.categoryName}
+                  onChange={handleCategoryChange}
                   required
                   disabled={loadingCategories}
+                  className="mb-2"
                 >
                   <option value="">Chọn danh mục</option>
                   {/* Render danh mục từ API */}
                   {categories.map(category => (
-                    <option key={category.id} value={category.id}>
+                    <option key={category.id} value={category.name}>
                       {category.name}
                     </option>
                   ))}
-                  {/* Hiển thị category không khớp nếu có */}
-                  {formData.categoryName && 
-                   categories.length > 0 && 
-                   !categories.some(cat => cat.id === formData.categoryName) && (
-                    <option value={formData.categoryName}>
-                       {formData.categoryName}
-                    </option>
-                  )}
+                  <option value="custom">Khác (nhập tùy chỉnh)</option>
                 </Form.Select>
+                
+                {useCustomCategory && (
+                  <Form.Control
+                    type="text"
+                    value={customCategory}
+                    onChange={handleCustomCategoryChange}
+                    placeholder="Nhập tên danh mục mới"
+                    required={useCustomCategory}
+                  />
+                )}
+                
                 {loadingCategories && <div className="text-muted small mt-1">Đang tải danh mục...</div>}
               </Form.Group>
 
